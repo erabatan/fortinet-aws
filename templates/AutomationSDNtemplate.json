@@ -11,7 +11,7 @@
           },
           "Parameters": [
             "VPCCIDR",
-            "AZForSubnet1",
+            "AZForSubnet",
             "PubSub",
             "PriSub",
             "KeyPair"

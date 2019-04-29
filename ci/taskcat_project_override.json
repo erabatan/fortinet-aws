@@ -1,0 +1,22 @@
+[
+    {
+        "ParameterKey": "VPCCIDR",
+        "ParameterValue": "10.1.0.0/16"
+    },
+    {
+        "ParameterKey": "AZForSubnet",
+        "ParameterValue": "eu-central-1a"
+    },
+    {
+        "ParameterKey": "PubSub",
+        "ParameterValue": "10.1.1.0/24"
+    },
+    {
+        "ParameterKey": "PriSub",
+        "ParameterValue": "10.1.11.0/24"
+    },
+    {
+        "ParameterKey": "KeyPair",
+        "ParameterValue": "frankfurt-erabatan"
+    }
+]
