@@ -43,7 +43,7 @@
     "CIDRForFortiGateAccess": {
       "Type": "String",
       "Default": "0.0.0.0/0",
-      "Description": "Enter the CIDR from which FortiGate instances needs to be accessed"
+      "Description": "Enter the CIDR from which FortiGate instances needs to be accessed quickly"
     },
     "InitialFGTInstanceType": {
       "Type": "String",
