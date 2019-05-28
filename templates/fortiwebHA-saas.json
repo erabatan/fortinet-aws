@@ -1,7 +1,7 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Conditions": {},
-  "Description": "AWS CloudFormation Template to launch VPC with a public subnet from which a Fortiweb device will protect a Saas application
+  "Description": "AWS CloudFormation Template to launch VPC with a public subnet from which a Fortiweb device will protect a Saas application",
   "Metadata": {
     "AWS::CloudFormation::Interface": {
       "ParameterGroups": [
