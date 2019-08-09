@@ -108,18 +108,12 @@
 			"Default": "c5.xlarge",
 			"Description": "Select the instance type for the FortiGates",
 			"AllowedValues": [
-				"c4.xlarge",
-				"c4.2xlarge",
-				"c4.4xlarge",
-				"c4.8xlarge",
+				"t3.xlarge",
 				"c5.xlarge",
 				"c5.2xlarge",
 				"c5.4xlarge",
 				"c5.9xlarge",
-				"c5n.xlarge",
-				"c5n.2xlarge",
-				"c5n.4xlarge",
-				"c5n.9xlarge"
+				"c5.18xlarge"
 			]
 		},
 		"CIDRForFGTAccess": {
@@ -151,6 +145,7 @@
 				"ap-southeast-2",
 				"ca-central-1",
 				"eu-central-1",
+				"eu-north-1",
 				"eu-west-1",
 				"eu-west-2",
 				"eu-west-3",
