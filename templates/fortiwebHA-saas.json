@@ -15,7 +15,11 @@
             "AZForSubnet2",
             "PublicSubnet1",
             "PublicSubnet2",
-            "KeyPair"
+            "DomainToProtect",
+            "port",
+            "SSL",
+            "KeyPair",
+            "HAsecret"
           ]
         }
       ]
@@ -45,6 +49,25 @@
       "Description": "Enter the value of the backup Public subnet",
       "Type": "String"
     },
+    "domain": {
+      "Default": "www.fortinet.com",
+      "Description": "Enter the name of the domain you want to protect (without http(s))",
+      "Type": "String"
+    },
+    "port": {
+      "Default": "443",
+      "Description": "Enter the default port for the application (80, 443, ...)",
+      "Type": "String"
+    },
+    "ssl": {
+      "AllowedValues": [
+        "yes",
+        "no"
+      ],
+      "Default": "yes",
+      "Description": "enable SSL between the fortiweb unit and the protected server",
+      "Type": "String"
+    },
     "CIDRForFortiGateAccess": {
       "Type": "String",
       "Default": "0.0.0.0/0",
@@ -52,9 +75,9 @@
     },
     "InitialFWBInstanceType": {
       "Type": "String",
-      "Default": "c5.large",
+      "Default": "c5.xlarge",
       "AllowedValues": [
-	    "c5.xlarge",
+	      "c5.xlarge",
 	      "m4.large",
         "m4.xlarge",
         "c4.large",
@@ -67,6 +90,10 @@
     "KeyPair": {
       "Type": "AWS::EC2::KeyPair::KeyName",
       "Description": "Enter the keypair that you want to associate with the launch of any device for console access"
+    },
+    "HAsecret": {
+      "Type": "String",
+      "Description": "Enter any HA password to authenticate the instances in the cluster"
     }
   },
   "Mappings": {
@@ -235,7 +262,7 @@
       },
       "Type": "AWS::EC2::RouteTable"
     },
-    "PublicSubnet1": {
+    "PubSubnet1": {
       "Properties": {
         "AvailabilityZone": {
           "Ref": "AZ1ForSubnet"
@@ -255,7 +282,7 @@
       },
       "Type": "AWS::EC2::Subnet"
     },
-    "PublicSubnet2": {
+    "PubSubnet2": {
       "Properties": {
         "AvailabilityZone": {
           "Ref": "AZ2ForSubnet"
@@ -281,7 +308,7 @@
           "Ref": "PubRouteTable"
         },
         "SubnetId": {
-          "Ref": "PublicSubnet1"
+          "Ref": "PubSubnet1"
         }
       },
       "Type": "AWS::EC2::SubnetRouteTableAssociation"
@@ -292,7 +319,7 @@
           "Ref": "PubRouteTable"
         },
         "SubnetId": {
-          "Ref": "PublicSubnet2"
+          "Ref": "PubSubnet2"
         }
       },
       "Type": "AWS::EC2::SubnetRouteTableAssociation"
@@ -307,8 +334,7 @@
               "Effect": "Allow",
               "Principal": {
                 "Service": [
-                  "ec2.amazonaws.com",
-                  "vpc.amazonaws.com"
+                  "ec2.amazonaws.com"
                 ]
               },
               "Action": [
@@ -384,10 +410,26 @@
         "KeyName": {
           "Ref": "KeyPair"
         },
+        "NetworkInterfaces": [
+          {
+            "NetworkInterfaceId": {
+              "Ref": "FWBAENI0"
+            },
+            "DeviceIndex": "0"
+          }
+        ],
         "Tags": [
           {
             "Key": "Name",
             "Value": "FortiWebA"
+          },
+          {
+            "Key": "DeviceType",
+            "Value": "FortiWeb"
+          },
+          {
+            "Key": "role",
+            "Value": "master"
           }
         ]
       }
@@ -410,10 +452,26 @@
         "KeyName": {
           "Ref": "KeyPair"
         },
+        "NetworkInterfaces": [
+          {
+            "NetworkInterfaceId": {
+              "Ref": "FWBBENI0"
+            },
+            "DeviceIndex": "0"
+          }
+        ],
         "Tags": [
           {
             "Key": "Name",
             "Value": "FortiWebB"
+          },
+          {
+            "Key": "DeviceType",
+            "Value": "FortiWeb"
+          },
+          {
+            "Key": "role",
+            "Value": "slave"
           }
         ]
       }
@@ -429,7 +487,7 @@
         ],
         "SourceDestCheck": "true",
         "SubnetId": {
-          "Ref": "PublicSubnet1"
+          "Ref": "PubSubnet1"
         },
         "Tags": [
           {
@@ -464,7 +522,7 @@
         ],
         "SourceDestCheck": "true",
         "SubnetId": {
-          "Ref": "PublicSubnet2"
+          "Ref": "PubSubnet2"
         },
         "Tags": [
           {
@@ -495,7 +553,7 @@
         "Domain": "vpc"
       }
     },
-    "EIP1association": {
+    "EIPAassociation": {
       "Type": "AWS::EC2::EIPAssociation",
       "Properties": {
         "AllocationId" : {
@@ -512,7 +570,7 @@
         "Domain": "vpc"
       }
     },
-    "EIP2association": {
+    "EIPBassociation": {
       "Type": "AWS::EC2::EIPAssociation",
       "Properties": {
         "AllocationId" : {
@@ -523,53 +581,95 @@
         }
       }
     },
+    "ConfigLambdaRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [{
+            "Effect": "Allow",
+            "Principal": {
+              "Service": [
+                "lambda.amazonaws.com"
+              ]
+            },
+            "Action": [
+              "sts:AssumeRole"
+            ]
+          }]
+        },
+        "Path": "/"
+      }
+    },
+    "ConfigLambdaPolicy": {
+			"DependsOn": [
+				"ConfigLambdaRole"
+			],
+			"Type": "AWS::IAM::Policy",
+			"Properties": {
+				"PolicyName": "ConfigLambdaPolicy",
+				"Roles": [{
+					"Ref": "ConfigLambdaRole"
+				}],
+				"PolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [{
+						"Effect": "Allow",
+						"Action": "ec2:*",
+						"Resource": [
+							"*"
+						]
+					}]
+				}
+			}
+		},
     "LambdaConfig": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Code": {
-					"S3Bucket": {
-						"Fn::FindInMap": ["RegionMap", {
-							"Ref": "AWS::Region"
-						}, "LambdaCode"]
-					},
-					"S3Key": "addquarantine.zip"
+          "ZipFile" : { "Fn::Join" : ["\n", [
+            "import json",
+            "",
+            "def lambda_handler(event, context):",
+            "   responseValue = int(event['ResourceProperties']['Input']) * 5",
+            "   responseData = {}",
+            "   responseData['Data'] = responseValue",
+            "   cfnresponse.send(event, context, cfnresponse.SUCCESS, responseData, \"CustomResourcePhysicalID\")"
+          ]]}
 				},
-        "Description": "this lambda function tags compromised hosts with tag tobequarantined",
-        "FunctionName": "add-quarantine",
-        "Handler": "addquarantine.lambda_handler",
+        "Description": "this lambda function configures Fortiweb at initial boot",
+        "FunctionName": "configFortiweb",
+        "Handler": "index.lambda_handler",
         "Role": {
           "Fn::GetAtt": [
-						"AddQuarLambdaRole",
+						"ConfigLambdaRole",
 						"Arn"
 					]
         },
-        "Runtime": "python3.6",
+        "Runtime": "python3.7",
         "Timeout": 60
       }
     }
   },
+  "Environment":{  
+    "Variables":{  
+      "ObjectName":{  
+        "Ref":"AWS::StackName"
+      }
+    }
+  },
   "Outputs": {
-    "FortigateAdminURL":{
-          "Description": "Access to the Fortigate device (admin / <device instance id> )",
+    "FortiWebAAdminURL":{
+          "Description": "Access to the FortiwebA device (admin / <device instance id> )",
           "Value": {
-    				"Fn::Join": ["", ["https://", {"Ref": "EIP1"}]]
+    				"Fn::Join": ["", ["https://", {"Ref": "EIPA"}]]
     			}
     },
-		"SDNAPIURL": {
-			"Description": "AWS API Gateway URL",
-			"Value": {
-				"Fn::Join": ["", ["https://", {
-					"Ref": "APItoLambda"
-				}, ".execute-api.", {
-					"Ref": "AWS::Region"
-				}, ".amazonaws.com", "/prod/apiaddquarantine"]]
-			}
-		},
-		"SDNAPIKey": {
-			"Description": "AWS API Key ID (get actual key value from AWS console)",
-			"Value": {
-				"Ref": "SDNAPIKey"
-			}
-		}
+    "FortiWebBAdminURL":{
+      "Description": "Access to the FortiwebB device (admin / <device instance id> )",
+      "Value": {
+        "Fn::Join": ["", ["https://", {"Ref": "EIPB"}]]
+      }
+    }
   }
 }
