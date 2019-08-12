@@ -798,7 +798,7 @@
 				],
 				"SourceDestCheck": "false",
 				"SubnetId": {
-					"Ref": "MgmtSubnetB"
+					"Ref": "MgmtSubnet2"
 				},
 				"Tags": [
 					{
