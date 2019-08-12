@@ -56,7 +56,7 @@
 			"Description": "Enter the VPC CIDR that you are using"
 		},
 		"VPCCIDR": {
-			"Type": "string",
+			"Type": "String",
 			"Description": "Enter the VPC CIDR of the above VPC. Ex: 10.0.0.0/16"
 		},
 		"AZForFGTA": {
