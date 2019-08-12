@@ -9,7 +9,7 @@
 						"default": "VPC Configuration"
 					},
 					"Parameters": [
-						"VPCCIDR",
+						"VPCID",
 						"PublicSubnet1",
 						"PrivateSubnet1",
 						"HeartbeatSubnet1",
@@ -50,10 +50,13 @@
 		}
 	},
 	"Parameters": {
-		"VPCCIDR": {
-			"Type": "String",
-			"Default": "10.0.0.0/16",
+		"VPCID": {
+			"Type": "AWS::EC2::VPC::Id",
 			"Description": "Enter the VPC CIDR that you are using"
+		},
+		"VPCCIDR": {
+			"Type": "string",
+			"Description": "Enter the VPC CIDR of the above VPC. Ex: 10.0.0.0/16"
 		},
 		"AZForFGTA": {
 			"Type": "AWS::EC2::AvailabilityZone::Name",
@@ -64,43 +67,35 @@
 			"Description": "Select the second AZ for FortiGateB"
 		},
 		"PublicSubnet1": {
-			"Type": "String",
-			"Default": "10.0.1.0/24",
+			"Type": "AWS::EC2::Subnet::Id",
 			"Description": "Select the Public1 subnet"
 		},
 		"PrivateSubnet1": {
-			"Type": "String",
-			"Default": "10.0.2.0/24",
+			"Type": "AWS::EC2::Subnet::Id",
 			"Description": "Select the Private1 subnet"
 		},
 		"HeartbeatSubnet1": {
-			"Type": "String",
-			"Default": "10.0.3.0/24",
+			"Type": "AWS::EC2::Subnet::Id",
 			"Description": "Select the Heartbeat1 subnet"
 		},
 		"MgmtSubnet1": {
-			"Type": "String",
-			"Default": "10.0.4.0/24",
+			"Type": "AWS::EC2::Subnet::Id",
 			"Description": "Select the Mgmt1 subnet"
 		},
 		"PublicSubnet2": {
-			"Type": "String",
-			"Default": "10.0.10.0/24",
+			"Type": "AWS::EC2::Subnet::Id",
 			"Description": "Select the Public2 subnet"
 		},
 		"PrivateSubnet2": {
-			"Type": "String",
-			"Default": "10.0.20.0/24",
+			"Type": "AWS::EC2::Subnet::Id",
 			"Description": "Select the Private2 subnet"
 		},
 		"HeartbeatSubnet2": {
-			"Type": "String",
-			"Default": "10.0.30.0/24",
+			"Type": "AWS::EC2::Subnet::Id",
 			"Description": "Select the Heartbeat2 subnet"
 		},
 		"MgmtSubnet2": {
-			"Type": "String",
-			"Default": "10.0.40.0/24",
+			"Type": "AWS::EC2::Subnet::Id",
 			"Description": "Select the Mgmt2 subnet"
 		},
 		"FGTInstanceType": {
@@ -109,6 +104,10 @@
 			"Description": "Select the instance type for the FortiGates",
 			"AllowedValues": [
 				"t3.xlarge",
+				"c4.xlarge",
+				"c4.2xlarge",
+				"c4.4xlarge",
+				"c4.8xlarge",
 				"c5.xlarge",
 				"c5.2xlarge",
 				"c5.4xlarge",
@@ -168,12 +167,10 @@
 		},
 		"FortiGateAHeartbeatIP": {
 			"Type": "String",
-			"Default": "10.0.3.10/24",
 			"Description": "Enter the IP address in CIDR form for the heartbeat interface of FortiGateA (IP from heartbeat Subnet1)"
 		},
 		"FortiGateBHeartbeatIP": {
 			"Type": "String",
-			"Default": "10.0.30.10/24",
 			"Description": "Enter the IP address in CIDR form for the heartbeat interface of FortiGateB (IP from heartbeat Subnet2)"
 		}
 	},
@@ -231,30 +228,6 @@
 	},
 	"Conditions": {},
 	"Resources": {
-		"VPCID": {
-			"Properties": {
-				"CidrBlock": {
-					"Ref": "VPCCIDR"
-				},
-				"Tags": [
-					{
-						"Key": "Name",
-						"Value": {
-							"Fn::Join": [
-								"",
-								[
-									{
-										"Ref": "AWS::StackName"
-									},
-									"VPCID"
-								]
-							]
-						}
-					}
-				]
-			},
-			"Type": "AWS::EC2::VPC"
-		},
 		"InstanceRole": {
 			"Type": "AWS::IAM::Role",
 			"Properties": {
@@ -309,339 +282,6 @@
 					}
 				]
 			}
-		},
-		"PrivateSubnetA": {
-			"Properties": {
-				"AvailabilityZone": {
-					"Ref": "AZForFGTA"
-				},
-				"CidrBlock": {
-					"Ref": "PrivateSubnet1"
-				},
-				"Tags": [
-					{
-						"Key": "Name",
-						"Value": {
-							"Fn::Join": [
-								"",
-								[
-									{
-										"Ref": "AWS::StackName"
-									},
-									"PrivateSubnet1"
-								]
-							]
-						}
-					}
-				],
-				"VpcId": {
-					"Ref": "VPCID"
-				}
-			},
-			"Type": "AWS::EC2::Subnet"
-		},
-		"PublicSubnetA": {
-			"Properties": {
-				"AvailabilityZone": {
-					"Ref": "AZForFGTA"
-				},
-				"CidrBlock": {
-					"Ref": "PublicSubnet1"
-				},
-				"Tags": [
-					{
-						"Key": "Name",
-						"Value": {
-							"Fn::Join": [
-								"",
-								[
-									{
-										"Ref": "AWS::StackName"
-									},
-									"PublicSubnet1"
-								]
-							]
-						}
-					}
-				],
-				"VpcId": {
-					"Ref": "VPCID"
-				}
-			},
-			"Type": "AWS::EC2::Subnet"
-		},
-		"HeartbeatSubnetA": {
-			"Properties": {
-				"AvailabilityZone": {
-					"Ref": "AZForFGTA"
-				},
-				"CidrBlock": {
-					"Ref": "HeartbeatSubnet1"
-				},
-				"Tags": [
-					{
-						"Key": "Name",
-						"Value": {
-							"Fn::Join": [
-								"",
-								[
-									{
-										"Ref": "AWS::StackName"
-									},
-									"HeartbeatSubnet1"
-								]
-							]
-						}
-					}
-				],
-				"VpcId": {
-					"Ref": "VPCID"
-				}
-			},
-			"Type": "AWS::EC2::Subnet"
-		},
-		"MgmtSubnetA": {
-			"Properties": {
-				"AvailabilityZone": {
-					"Ref": "AZForFGTA"
-				},
-				"CidrBlock": {
-					"Ref": "MgmtSubnet1"
-				},
-				"Tags": [
-					{
-						"Key": "Name",
-						"Value": {
-							"Fn::Join": [
-								"",
-								[
-									{
-										"Ref": "AWS::StackName"
-									},
-									"MgmtSubnet1"
-								]
-							]
-						}
-					}
-				],
-				"VpcId": {
-					"Ref": "VPCID"
-				}
-			},
-			"Type": "AWS::EC2::Subnet"
-		},
-		"PrivateSubnetB": {
-			"Properties": {
-				"AvailabilityZone": {
-					"Ref": "AZForFGTB"
-				},
-				"CidrBlock": {
-					"Ref": "PrivateSubnet2"
-				},
-				"Tags": [
-					{
-						"Key": "Name",
-						"Value": {
-							"Fn::Join": [
-								"",
-								[
-									{
-										"Ref": "AWS::StackName"
-									},
-									"PrivateSubnet2"
-								]
-							]
-						}
-					}
-				],
-				"VpcId": {
-					"Ref": "VPCID"
-				}
-			},
-			"Type": "AWS::EC2::Subnet"
-		},
-		"PublicSubnetB": {
-			"Properties": {
-				"AvailabilityZone": {
-					"Ref": "AZForFGTB"
-				},
-				"CidrBlock": {
-					"Ref": "PublicSubnet2"
-				},
-				"Tags": [
-					{
-						"Key": "Name",
-						"Value": {
-							"Fn::Join": [
-								"",
-								[
-									{
-										"Ref": "AWS::StackName"
-									},
-									"PublicSubnet2"
-								]
-							]
-						}
-					}
-				],
-				"VpcId": {
-					"Ref": "VPCID"
-				}
-			},
-			"Type": "AWS::EC2::Subnet"
-		},
-		"HeartbeatSubnetB": {
-			"Properties": {
-				"AvailabilityZone": {
-					"Ref": "AZForFGTB"
-				},
-				"CidrBlock": {
-					"Ref": "HeartbeatSubnet2"
-				},
-				"Tags": [
-					{
-						"Key": "Name",
-						"Value": {
-							"Fn::Join": [
-								"",
-								[
-									{
-										"Ref": "AWS::StackName"
-									},
-									"HeartbeatSubnet2"
-								]
-							]
-						}
-					}
-				],
-				"VpcId": {
-					"Ref": "VPCID"
-				}
-			},
-			"Type": "AWS::EC2::Subnet"
-		},
-		"MgmtSubnetB": {
-			"Properties": {
-				"AvailabilityZone": {
-					"Ref": "AZForFGTB"
-				},
-				"CidrBlock": {
-					"Ref": "MgmtSubnet2"
-				},
-				"Tags": [
-					{
-						"Key": "Name",
-						"Value": {
-							"Fn::Join": [
-								"",
-								[
-									{
-										"Ref": "AWS::StackName"
-									},
-									"MgmtSubnet2"
-								]
-							]
-						}
-					}
-				],
-				"VpcId": {
-					"Ref": "VPCID"
-				}
-			},
-			"Type": "AWS::EC2::Subnet"
-		},
-		"AttachGateway": {
-			"Properties": {
-				"InternetGatewayId": {
-					"Ref": "InternetGateway"
-				},
-				"VpcId": {
-					"Ref": "VPCID"
-				}
-			},
-			"Type": "AWS::EC2::VPCGatewayAttachment"
-		},
-		"InternetGateway": {
-			"Properties": {
-				"Tags": [
-					{
-						"Key": "Name",
-						"Value": {
-							"Fn::Join": [
-								"",
-								[
-									{
-										"Ref": "AWS::StackName"
-									},
-									"IGW"
-								]
-							]
-						}
-					}
-				]
-			},
-			"Type": "AWS::EC2::InternetGateway"
-		},
-		"PublicDefaultRoute": {
-			"DependsOn": "AttachGateway",
-			"Properties": {
-				"DestinationCidrBlock": "0.0.0.0/0",
-				"GatewayId": {
-					"Ref": "InternetGateway"
-				},
-				"RouteTableId": {
-					"Ref": "RouteTable"
-				}
-			},
-			"Type": "AWS::EC2::Route"
-		},
-		"RouteTable": {
-			"Properties": {
-				"Tags": [
-					{
-						"Key": "Name",
-						"Value": {
-							"Fn::Join": [
-								"",
-								[
-									{
-										"Ref": "AWS::StackName"
-									},
-									"PublicRoute"
-								]
-							]
-						}
-					}
-				],
-				"VpcId": {
-					"Ref": "VPCID"
-				}
-			},
-			"Type": "AWS::EC2::RouteTable"
-		},
-		"HeartbeatRouteTable": {
-			"Properties": {
-				"Tags": [
-					{
-						"Key": "Name",
-						"Value": {
-							"Fn::Join": [
-								"",
-								[
-									{
-										"Ref": "AWS::StackName"
-									},
-									"HeartbeatRoute"
-								]
-							]
-						}
-					}
-				],
-				"VpcId": {
-					"Ref": "VPCID"
-				}
-			},
-			"Type": "AWS::EC2::RouteTable"
 		},
 		"FGTSecGrpBase": {
 			"Type": "AWS::EC2::SecurityGroup",
@@ -1242,130 +882,6 @@
 				}
 			},
 			"DependsOn": "FgtBMgmtEIP"
-		},
-		"PrivateRouteTable": {
-			"Type": "AWS::EC2::RouteTable",
-			"Properties": {
-				"VpcId": {
-					"Ref": "VPCID"
-				},
-				"Tags": [
-					{
-						"Key": "Name",
-						"Value": {
-							"Fn::Join": [
-								"",
-								[
-									{
-										"Ref": "AWS::StackName"
-									},
-									"-PrivateRouteTable"
-								]
-							]
-						}
-					}
-				]
-			}
-		},
-		"DefaultRoute": {
-			"Type": "AWS::EC2::Route",
-			"Properties": {
-				"RouteTableId": {
-					"Ref": "PrivateRouteTable"
-				},
-				"DestinationCidrBlock": "0.0.0.0/0",
-				"NetworkInterfaceId": {
-					"Ref": "FGTAENI1"
-				}
-			}
-		},
-		"HeartbeatAZ1RouteTableAssociation": {
-			"Type": "AWS::EC2::SubnetRouteTableAssociation",
-			"Properties": {
-				"SubnetId": {
-					"Ref": "HeartbeatSubnetA"
-				},
-				"RouteTableId": {
-					"Ref": "HeartbeatRouteTable"
-				}
-			}
-		},
-		"HeartbeatAZ2RouteTableAssociation": {
-			"Type": "AWS::EC2::SubnetRouteTableAssociation",
-			"Properties": {
-				"SubnetId": {
-					"Ref": "HeartbeatSubnetB"
-				},
-				"RouteTableId": {
-					"Ref": "HeartbeatRouteTable"
-				}
-			}
-		},
-		"AZ1SubnetRouteTableAssociation": {
-			"Type": "AWS::EC2::SubnetRouteTableAssociation",
-			"Properties": {
-				"SubnetId": {
-					"Ref": "PrivateSubnetA"
-				},
-				"RouteTableId": {
-					"Ref": "PrivateRouteTable"
-				}
-			}
-		},
-		"AZ2SubnetRouteTableAssociation": {
-			"Type": "AWS::EC2::SubnetRouteTableAssociation",
-			"Properties": {
-				"SubnetId": {
-					"Ref": "PrivateSubnetB"
-				},
-				"RouteTableId": {
-					"Ref": "PrivateRouteTable"
-				}
-			}
-		},
-		"SubnetRouteTableAssociation1": {
-			"Properties": {
-				"RouteTableId": {
-					"Ref": "RouteTable"
-				},
-				"SubnetId": {
-					"Ref": "PublicSubnetA"
-				}
-			},
-			"Type": "AWS::EC2::SubnetRouteTableAssociation"
-		},
-		"SubnetRouteTableAssociation2": {
-			"Properties": {
-				"RouteTableId": {
-					"Ref": "RouteTable"
-				},
-				"SubnetId": {
-					"Ref": "PublicSubnetB"
-				}
-			},
-			"Type": "AWS::EC2::SubnetRouteTableAssociation"
-		},
-		"SubnetRouteTableAssociation3": {
-			"Properties": {
-				"RouteTableId": {
-					"Ref": "RouteTable"
-				},
-				"SubnetId": {
-					"Ref": "MgmtSubnetA"
-				}
-			},
-			"Type": "AWS::EC2::SubnetRouteTableAssociation"
-		},
-		"SubnetRouteTableAssociation4": {
-			"Properties": {
-				"RouteTableId": {
-					"Ref": "RouteTable"
-				},
-				"SubnetId": {
-					"Ref": "MgmtSubnetB"
-				}
-			},
-			"Type": "AWS::EC2::SubnetRouteTableAssociation"
 		},
 		"LambdaRole": {
 			"Type": "AWS::IAM::Role",
@@ -2120,46 +1636,6 @@
 							"}"
 						]
 					]
-				}
-			}
-		},
-		"S3Endpoint": {
-			"Type": "AWS::EC2::VPCEndpoint",
-			"Properties": {
-				"PolicyDocument": {
-					"Version": "2012-10-17",
-					"Statement": [
-						{
-							"Effect": "Allow",
-							"Principal": "*",
-							"Action": [
-								"s3:*"
-							],
-							"Resource": [
-								"*"
-							]
-						}
-					]
-				},
-				"RouteTableIds": [
-					{
-						"Ref": "RouteTable"
-					}
-				],
-				"ServiceName": {
-					"Fn::Join": [
-						"",
-						[
-							"com.amazonaws.",
-							{
-								"Ref": "AWS::Region"
-							},
-							".s3"
-						]
-					]
-				},
-				"VpcId": {
-					"Ref": "VPCID"
 				}
 			}
 		}
