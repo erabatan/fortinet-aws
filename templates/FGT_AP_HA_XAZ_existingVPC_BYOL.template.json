@@ -10,6 +10,7 @@
 					},
 					"Parameters": [
 						"VPCID",
+						"VPCCIDR",
 						"PublicSubnet1",
 						"PrivateSubnet1",
 						"HeartbeatSubnet1",
