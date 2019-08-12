@@ -607,7 +607,7 @@
 				],
 				"SourceDestCheck": "false",
 				"SubnetId": {
-					"Ref": "PrivateSubnetA"
+					"Ref": "PrivateSubnet1"
 				},
 				"Tags": [
 					{
@@ -669,7 +669,7 @@
 				],
 				"SourceDestCheck": "false",
 				"SubnetId": {
-					"Ref": "HeartbeatSubnetA"
+					"Ref": "HeartbeatSubnet1"
 				},
 				"PrivateIpAddresses": [
 					{
@@ -767,7 +767,7 @@
 				],
 				"SourceDestCheck": "false",
 				"SubnetId": {
-					"Ref": "MgmtSubnetA"
+					"Ref": "MgmtSubnet1"
 				},
 				"Tags": [
 					{
@@ -1157,7 +1157,7 @@
 													"Fn::Split": [
 														".",
 														{
-															"Ref": "PublicSubnet1"
+															"Fn::GetAtt" : [ "PublicSubnet1", "CidrBlock" ]
 														}
 													]
 												}
@@ -1171,7 +1171,7 @@
 													"Fn::Split": [
 														".",
 														{
-															"Ref": "PublicSubnet1"
+															"Fn::GetAtt" : [ "PublicSubnet1", "CidrBlock" ]
 														}
 													]
 												}
@@ -1185,7 +1185,7 @@
 													"Fn::Split": [
 														".",
 														{
-															"Ref": "PublicSubnet1"
+															"Fn::GetAtt" : [ "PublicSubnet1", "CidrBlock" ]
 														}
 													]
 												}
@@ -1208,7 +1208,7 @@
 													"Fn::Split": [
 														".",
 														{
-															"Ref": "HeartbeatSubnet1"
+															"Fn::GetAtt" : [ "HeartbeatSubnet1", "CidrBlock" ]
 														}
 													]
 												}
@@ -1222,7 +1222,7 @@
 													"Fn::Split": [
 														".",
 														{
-															"Ref": "HeartbeatSubnet1"
+															"Fn::GetAtt" : [ "HeartbeatSubnet1", "CidrBlock" ]
 														}
 													]
 												}
@@ -1236,7 +1236,7 @@
 													"Fn::Split": [
 														".",
 														{
-															"Ref": "HeartbeatSubnet1"
+															"Fn::GetAtt" : [ "HeartbeatSubnet1", "CidrBlock" ]
 														}
 													]
 												}
@@ -1259,7 +1259,7 @@
 													"Fn::Split": [
 														".",
 														{
-															"Ref": "PrivateSubnet1"
+															"Fn::GetAtt" : [ "PrivateSubnet1", "CidrBlock" ]
 														}
 													]
 												}
@@ -1273,7 +1273,7 @@
 													"Fn::Split": [
 														".",
 														{
-															"Ref": "PrivateSubnet1"
+															"Fn::GetAtt" : [ "PrivateSubnet1", "CidrBlock" ]
 														}
 													]
 												}
@@ -1287,7 +1287,7 @@
 													"Fn::Split": [
 														".",
 														{
-															"Ref": "PrivateSubnet1"
+															"Fn::GetAtt" : [ "PrivateSubnet1", "CidrBlock" ]
 														}
 													]
 												}
@@ -1315,7 +1315,7 @@
 													"Fn::Split": [
 														".",
 														{
-															"Ref": "MgmtSubnet1"
+															"Fn::GetAtt" : [ "MgmtSubnet1", "CidrBlock" ]
 														}
 													]
 												}
@@ -1329,7 +1329,7 @@
 													"Fn::Split": [
 														".",
 														{
-															"Ref": "MgmtSubnet1"
+															"Fn::GetAtt" : [ "MgmtSubnet1", "CidrBlock" ]
 														}
 													]
 												}
@@ -1343,7 +1343,7 @@
 													"Fn::Split": [
 														".",
 														{
-															"Ref": "MgmtSubnet1"
+															"Fn::GetAtt" : [ "MgmtSubnet1", "CidrBlock" ]
 														}
 													]
 												}
@@ -1427,7 +1427,7 @@
 													"Fn::Split": [
 														".",
 														{
-															"Ref": "PublicSubnet2"
+															"Fn::GetAtt" : [ "PublicSubnet2", "CidrBlock" ]
 														}
 													]
 												}
@@ -1441,7 +1441,7 @@
 													"Fn::Split": [
 														".",
 														{
-															"Ref": "PublicSubnet2"
+															"Fn::GetAtt" : [ "PublicSubnet2", "CidrBlock" ]
 														}
 													]
 												}
@@ -1455,7 +1455,7 @@
 													"Fn::Split": [
 														".",
 														{
-															"Ref": "PublicSubnet2"
+															"Fn::GetAtt" : [ "PublicSubnet2", "CidrBlock" ]
 														}
 													]
 												}
@@ -1478,7 +1478,7 @@
 													"Fn::Split": [
 														".",
 														{
-															"Ref": "HeartbeatSubnet2"
+															"Fn::GetAtt" : [ "HeartbeatSubnet2", "CidrBlock" ]
 														}
 													]
 												}
@@ -1492,7 +1492,7 @@
 													"Fn::Split": [
 														".",
 														{
-															"Ref": "HeartbeatSubnet2"
+															"Fn::GetAtt" : [ "HeartbeatSubnet2", "CidrBlock" ]
 														}
 													]
 												}
@@ -1506,7 +1506,7 @@
 													"Fn::Split": [
 														".",
 														{
-															"Ref": "HeartbeatSubnet2"
+															"Fn::GetAtt" : [ "HeartbeatSubnet2", "CidrBlock" ]
 														}
 													]
 												}
@@ -1529,7 +1529,7 @@
 													"Fn::Split": [
 														".",
 														{
-															"Ref": "PrivateSubnet2"
+															"Fn::GetAtt" : [ "PrivateSubnet2", "CidrBlock" ]
 														}
 													]
 												}
@@ -1543,7 +1543,7 @@
 													"Fn::Split": [
 														".",
 														{
-															"Ref": "PrivateSubnet2"
+															"Fn::GetAtt" : [ "PrivateSubnet2", "CidrBlock" ]
 														}
 													]
 												}
@@ -1557,7 +1557,7 @@
 													"Fn::Split": [
 														".",
 														{
-															"Ref": "PrivateSubnet2"
+															"Fn::GetAtt" : [ "PrivateSubnet2", "CidrBlock" ]
 														}
 													]
 												}
@@ -1585,7 +1585,7 @@
 													"Fn::Split": [
 														".",
 														{
-															"Ref": "MgmtSubnet2"
+															"Fn::GetAtt" : [ "MgmtSubnet2", "CidrBlock" ]
 														}
 													]
 												}
@@ -1599,7 +1599,7 @@
 													"Fn::Split": [
 														".",
 														{
-															"Ref": "MgmtSubnet2"
+															"Fn::GetAtt" : [ "MgmtSubnet2", "CidrBlock" ]
 														}
 													]
 												}
@@ -1613,7 +1613,7 @@
 													"Fn::Split": [
 														".",
 														{
-															"Ref": "MgmtSubnet2"
+															"Fn::GetAtt" : [ "MgmtSubnet2", "CidrBlock" ]
 														}
 													]
 												}
