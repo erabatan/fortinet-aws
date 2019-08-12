@@ -537,7 +537,7 @@
 				],
 				"SourceDestCheck": "false",
 				"SubnetId": {
-					"Ref": "PublicSubnetA"
+					"Ref": "PublicSubnet1"
 				},
 				"Tags": [
 					{
@@ -572,7 +572,7 @@
 				],
 				"SourceDestCheck": "false",
 				"SubnetId": {
-					"Ref": "PublicSubnetB"
+					"Ref": "PublicSubnet2"
 				},
 				"Tags": [
 					{
@@ -638,7 +638,7 @@
 				],
 				"SourceDestCheck": "false",
 				"SubnetId": {
-					"Ref": "PrivateSubnetB"
+					"Ref": "PrivateSubnet2"
 				},
 				"Tags": [
 					{
@@ -718,7 +718,7 @@
 				],
 				"SourceDestCheck": "false",
 				"SubnetId": {
-					"Ref": "HeartbeatSubnetB"
+					"Ref": "HeartbeatSubnet2"
 				},
 				"PrivateIpAddresses": [
 					{
