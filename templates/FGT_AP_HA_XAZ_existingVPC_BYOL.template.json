@@ -100,9 +100,9 @@
 			"Type": "AWS::EC2::Subnet::Id",
 			"Description": "Select the Mgmt2 subnet"
 		},
-		"RouteTable2": {
-			"Type": "AWS::EC2::RouteTable",
-			"Description": "Select the routetable for management subnet of FGTB (A VPC endpoint to S3 bucket will be created)"
+		"RouteTableMgmtSubnet2": {
+			"Type": "string",
+			"Description": "Indicate the routetable Id for management subnet of FGTB (A VPC endpoint to S3 bucket will be created)"
 		},
 		"FGTInstanceType": {
 			"Type": "String",
@@ -1294,7 +1294,7 @@
 				},
 				"RouteTableIds": [
 					{
-						"Ref": "RouteTable2"
+						"Ref": "RouteTableMgmtSubnet2"
 					}
 				],
 				"ServiceName": {
