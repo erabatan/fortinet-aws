@@ -19,7 +19,7 @@
 						"PrivateSubnet2",
 						"HeartbeatSubnet2",
 						"MgmtSubnet2",
-						"RouteTable2"
+						"RouteTableMgmtSubnet2"
 					]
 				},
 				{
@@ -101,7 +101,7 @@
 			"Description": "Select the Mgmt2 subnet"
 		},
 		"RouteTableMgmtSubnet2": {
-			"Type": "string",
+			"Type": "String",
 			"Description": "Indicate the routetable Id for management subnet of FGTB (A VPC endpoint to S3 bucket will be created)"
 		},
 		"FGTInstanceType": {
