@@ -1355,10 +1355,7 @@
 			"Description": "URL to access FortigateB"
 		},
 		"FGTBPassword": {
-			"Value": {
-				"Ref": "FgtB"
-			},
-			"Description": "Password to access FortigateB"
+			"Description": "Same password as FGTA's"
 		}
 	}
 }
