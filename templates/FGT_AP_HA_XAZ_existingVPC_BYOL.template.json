@@ -18,7 +18,8 @@
 						"PublicSubnet2",
 						"PrivateSubnet2",
 						"HeartbeatSubnet2",
-						"MgmtSubnet2"
+						"MgmtSubnet2",
+						"RouteTable2"
 					]
 				},
 				{
@@ -99,6 +100,10 @@
 			"Type": "AWS::EC2::Subnet::Id",
 			"Description": "Select the Mgmt2 subnet"
 		},
+		"RouteTable2": {
+			"Type": "AWS::EC2::RouteTable",
+			"Description": "Select the routetable for management subnet of FGTB (A VPC endpoint to S3 bucket will be created)"
+		},
 		"FGTInstanceType": {
 			"Type": "String",
 			"Default": "c5.xlarge",
@@ -168,11 +173,11 @@
 		},
 		"FortiGateAHeartbeatIP": {
 			"Type": "String",
-			"Description": "Enter the IP address in CIDR form for the heartbeat interface of FortiGateA (IP from heartbeat Subnet1)"
+			"Description": "Enter the IP address in CIDR form for the heartbeat interface of FortiGateA (IP from heartbeat Subnet1). Ex: 10.0.3.10/24"
 		},
 		"FortiGateBHeartbeatIP": {
 			"Type": "String",
-			"Description": "Enter the IP address in CIDR form for the heartbeat interface of FortiGateB (IP from heartbeat Subnet2)"
+			"Description": "Enter the IP address in CIDR form for the heartbeat interface of FortiGateB (IP from heartbeat Subnet2). Ex: 10.0.30.10/24"
 		}
 	},
 	"Mappings": {
@@ -913,7 +918,8 @@
 								{
 									"Effect": "Allow",
 									"Action": [
-										"s3:PutObject"
+										"s3:PutObject",
+										"ec2:DescribeSubnets"
 									],
 									"Resource": "*"
 								},
@@ -944,6 +950,7 @@
 								"import cfnresponse",
 								"import json",
 								"import logging",
+								"import ipaddress",
 								"logger = logging.getLogger()",
 								"logger.setLevel(logging.INFO)",
 								"s3 = boto3.client('s3')",
@@ -951,40 +958,29 @@
 								"template = '''\\",
 								"config system global",
 								"set hostname {Hostname}",
-								"set admintimeout 60",
 								"end",
 								"config system interface",
 								"edit port1",
 								"set alias public",
 								"set mode static",
 								"set ip {Port1IP}/24",
-								"set allowaccess ping https ssh",
-								"set mtu-override enable",
-								"set mtu 9001",
 								"next",
 								"edit port2",
 								"set alias private",
 								"set mode static",
 								"set ip {Port2IP}/24",
 								"set allowaccess ping https ssh",
-								"set mtu-override enable",
-								"set mtu 9001",
 								"next",
 								"edit port3",
 								"set alias hasync",
 								"set mode static",
 								"set ip {Port3IP}/24",
-								"set allowaccess ping",
-								"set mtu-override enable",
-								"set mtu 9001",
 								"next",
 								"edit port4",
 								"set alias hamgmt",
 								"set mode static",
 								"set ip {Port4IP}/24",
 								"set allowaccess ping https ssh",
-								"set mtu-override enable",
-								"set mtu 9001",
 								"next",
 								"end",
 								"config router static",
@@ -1032,10 +1028,26 @@
 								"set unicast-hb-peerip {HApeer}",
 								"end\\",
 								"'''",
+								"ec2client = boto3.client('ec2')",
 								"",
 								"def handler(event, context):",
+								"    subcidr=[]",
+								{"Fn::Join":["",["    for sub in ['",{"Fn::Join":["','",[{"Ref":"PublicSubnet1"},{"Ref":"PrivateSubnet1"},{"Ref":"MgmtSubnet1"},{"Ref":"PublicSubnet2"},{"Ref":"PrivateSubnet2"},{"Ref":"MgmtSubnet2"}]]},"']:"]]},
+								"        response = ec2client.describe_subnets(",
+								"            SubnetIds=[sub]",
+								"        )",
+								"        if response['ResponseMetadata']['HTTPStatusCode'] == 200:",
+								"            net=response['Subnets'][0]['CidrBlock'].split('/')[0]",
+								"            routerIP=ipaddress.ip_address(net)+1",
+								"            subcidr.append(str(routerIP))",
+								"        else:",
+								"            responseData = {'msg':'error'}",
+								"            cfnresponse.send(event, context, cfnresponse.FAILED, responseData)",
+								"",
 								"    dict1 = ast.literal_eval(event['ResourceProperties']['FGTAInfo'])",
+								"    dict1.update({'PublicSubnetRouterIP':subcidr[0],'PrivateSubnetRouterIP':subcidr[1],'HAmgmtSubnetRouterIP':subcidr[2]})",
 								"    dict2 = ast.literal_eval(event['ResourceProperties']['FGTBInfo'])",
+								"    dict2.update({'PublicSubnetRouterIP':subcidr[3],'PrivateSubnetRouterIP':subcidr[4],'HAmgmtSubnetRouterIP':subcidr[5]})",
 								"    fgtA_conf = template.format(**dict1)",
 								"    fgtB_conf = template.format(**dict2)",
 								"    fgtA_result = False",
@@ -1081,7 +1093,7 @@
 				},
 				"Timeout": 120,
 				"Handler": "index.handler",
-				"Runtime": "python2.7",
+				"Runtime": "python3.6",
 				"MemorySize": 128
 			}
 		},
@@ -1111,6 +1123,21 @@
 							"'HAsubnet':'",
 							{
 								"Ref": "HeartbeatSubnet2"
+							},
+							"',",
+							"'PublicSubnet':'",
+							{
+								"Ref": "PublicSubnet1"
+							},
+							"',",
+							"'PrivateSubnet':'",
+							{
+								"Ref": "PrivateSubnet1"
+							},
+							"',",
+							"'MgmtSubnet':'",
+							{
+								"Ref": "MgmtSubnet1"
 							},
 							"',",
 							"'Port1IP':'",
@@ -1145,213 +1172,9 @@
 								]
 							},
 							"',",
-							"'PublicSubnetRouterIP':'",
-							{
-								"Fn::Join": [
-									"",
-									[
-										{
-											"Fn::Select": [
-												"0",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Fn::GetAtt" : [ {"Ref":"PublicSubnet1"}, "CidrBlock" ]
-														}
-													]
-												}
-											]
-										},
-										".",
-										{
-											"Fn::Select": [
-												"1",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Fn::GetAtt" : [ {"Ref":"PublicSubnet1"}, "CidrBlock" ]
-														}
-													]
-												}
-											]
-										},
-										".",
-										{
-											"Fn::Select": [
-												"2",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Fn::GetAtt" : [ {"Ref":"PublicSubnet1"}, "CidrBlock" ]
-														}
-													]
-												}
-											]
-										},
-										".1"
-									]
-								]
-							},
-							"',",
-							"'HeartbeatSubnetRouterIP':'",
-							{
-								"Fn::Join": [
-									"",
-									[
-										{
-											"Fn::Select": [
-												"0",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Fn::GetAtt" : [ {"Ref":"HeartbeatSubnet1"}, "CidrBlock" ]
-														}
-													]
-												}
-											]
-										},
-										".",
-										{
-											"Fn::Select": [
-												"1",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Fn::GetAtt" : [ {"Ref":"HeartbeatSubnet1"}, "CidrBlock" ]
-														}
-													]
-												}
-											]
-										},
-										".",
-										{
-											"Fn::Select": [
-												"2",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Fn::GetAtt" : [ {"Ref":"HeartbeatSubnet1"}, "CidrBlock" ]
-														}
-													]
-												}
-											]
-										},
-										".1"
-									]
-								]
-							},
-							"',",
-							"'PrivateSubnetRouterIP':'",
-							{
-								"Fn::Join": [
-									"",
-									[
-										{
-											"Fn::Select": [
-												"0",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Fn::GetAtt" : [ {"Ref":"PrivateSubnet1"}, "CidrBlock" ]
-														}
-													]
-												}
-											]
-										},
-										".",
-										{
-											"Fn::Select": [
-												"1",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Fn::GetAtt" : [ {"Ref":"PrivateSubnet1"}, "CidrBlock" ]
-														}
-													]
-												}
-											]
-										},
-										".",
-										{
-											"Fn::Select": [
-												"2",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Fn::GetAtt" : [ {"Ref":"PrivateSubnet1"}, "CidrBlock" ]
-														}
-													]
-												}
-											]
-										},
-										".1"
-									]
-								]
-							},
-							"',",
 							"'HAsecret':'",
 							{
 								"Ref": "HAsecret"
-							},
-							"',",
-							"'HAmgmtSubnetRouterIP':'",
-							{
-								"Fn::Join": [
-									"",
-									[
-										{
-											"Fn::Select": [
-												"0",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Fn::GetAtt" : [ {"Ref":"MgmtSubnet1"}, "CidrBlock" ]
-														}
-													]
-												}
-											]
-										},
-										".",
-										{
-											"Fn::Select": [
-												"1",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Fn::GetAtt" : [ {"Ref":"MgmtSubnet1"}, "CidrBlock" ]
-														}
-													]
-												}
-											]
-										},
-										".",
-										{
-											"Fn::Select": [
-												"2",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Fn::GetAtt" : [ {"Ref":"MgmtSubnet1"}, "CidrBlock" ]
-														}
-													]
-												}
-											]
-										},
-										".1"
-									]
-								]
 							},
 							"',",
 							"'HApeer':'",
@@ -1381,6 +1204,21 @@
 							"'HAsubnet':'",
 							{
 								"Ref": "HeartbeatSubnet1"
+							},
+							"',",
+							"'PublicSubnet':'",
+							{
+								"Ref": "PublicSubnet2"
+							},
+							"',",
+							"'PrivateSubnet':'",
+							{
+								"Ref": "PrivateSubnet2"
+							},
+							"',",
+							"'MgmtSubnet':'",
+							{
+								"Ref": "MgmtSubnet2"
 							},
 							"',",
 							"'Port1IP':'",
@@ -1415,213 +1253,9 @@
 								]
 							},
 							"',",
-							"'PublicSubnetRouterIP':'",
-							{
-								"Fn::Join": [
-									"",
-									[
-										{
-											"Fn::Select": [
-												"0",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Fn::GetAtt" : [ {"Ref":"PublicSubnet2"}, "CidrBlock" ]
-														}
-													]
-												}
-											]
-										},
-										".",
-										{
-											"Fn::Select": [
-												"1",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Fn::GetAtt" : [ {"Ref":"PublicSubnet2"}, "CidrBlock" ]
-														}
-													]
-												}
-											]
-										},
-										".",
-										{
-											"Fn::Select": [
-												"2",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Fn::GetAtt" : [ {"Ref":"PublicSubnet2"}, "CidrBlock" ]
-														}
-													]
-												}
-											]
-										},
-										".1"
-									]
-								]
-							},
-							"',",
-							"'HeartbeatSubnetRouterIP':'",
-							{
-								"Fn::Join": [
-									"",
-									[
-										{
-											"Fn::Select": [
-												"0",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Fn::GetAtt" : [ {"Ref":"HeartbeatSubnet2"}, "CidrBlock" ]
-														}
-													]
-												}
-											]
-										},
-										".",
-										{
-											"Fn::Select": [
-												"1",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Fn::GetAtt" : [ {"Ref":"HeartbeatSubnet2"}, "CidrBlock" ]
-														}
-													]
-												}
-											]
-										},
-										".",
-										{
-											"Fn::Select": [
-												"2",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Fn::GetAtt" : [ {"Ref":"HeartbeatSubnet2"}, "CidrBlock" ]
-														}
-													]
-												}
-											]
-										},
-										".1"
-									]
-								]
-							},
-							"',",
-							"'PrivateSubnetRouterIP':'",
-							{
-								"Fn::Join": [
-									"",
-									[
-										{
-											"Fn::Select": [
-												"0",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Fn::GetAtt" : [ {"Ref":"PrivateSubnet2"}, "CidrBlock" ]
-														}
-													]
-												}
-											]
-										},
-										".",
-										{
-											"Fn::Select": [
-												"1",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Fn::GetAtt" : [ {"Ref":"PrivateSubnet2"}, "CidrBlock" ]
-														}
-													]
-												}
-											]
-										},
-										".",
-										{
-											"Fn::Select": [
-												"2",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Fn::GetAtt" : [ {"Ref":"PrivateSubnet2"}, "CidrBlock" ]
-														}
-													]
-												}
-											]
-										},
-										".1"
-									]
-								]
-							},
-							"',",
 							"'HAsecret':'",
 							{
 								"Ref": "HAsecret"
-							},
-							"',",
-							"'HAmgmtSubnetRouterIP':'",
-							{
-								"Fn::Join": [
-									"",
-									[
-										{
-											"Fn::Select": [
-												"0",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Fn::GetAtt" : [ {"Ref":"MgmtSubnet2"}, "CidrBlock" ]
-														}
-													]
-												}
-											]
-										},
-										".",
-										{
-											"Fn::Select": [
-												"1",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Fn::GetAtt" : [ {"Ref":"MgmtSubnet2"}, "CidrBlock" ]
-														}
-													]
-												}
-											]
-										},
-										".",
-										{
-											"Fn::Select": [
-												"2",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Fn::GetAtt" : [ {"Ref":"MgmtSubnet2"}, "CidrBlock" ]
-														}
-													]
-												}
-											]
-										},
-										".1"
-									]
-								]
 							},
 							"',",
 							"'HApeer':'",
@@ -1637,6 +1271,46 @@
 							"}"
 						]
 					]
+				}
+			}
+		},
+		"S3Endpoint": {
+			"Type": "AWS::EC2::VPCEndpoint",
+			"Properties": {
+				"PolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [
+						{
+							"Effect": "Allow",
+							"Principal": "*",
+							"Action": [
+								"s3:*"
+							],
+							"Resource": [
+								"*"
+							]
+						}
+					]
+				},
+				"RouteTableIds": [
+					{
+						"Ref": "RouteTable2"
+					}
+				],
+				"ServiceName": {
+					"Fn::Join": [
+						"",
+						[
+							"com.amazonaws.",
+							{
+								"Ref": "AWS::Region"
+							},
+							".s3"
+						]
+					]
+				},
+				"VpcId": {
+					"Ref": "VPCID"
 				}
 			}
 		}
