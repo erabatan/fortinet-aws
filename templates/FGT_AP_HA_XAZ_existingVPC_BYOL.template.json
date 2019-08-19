@@ -102,7 +102,7 @@
 		},
 		"RouteTableMgmtSubnet2": {
 			"Type": "String",
-			"Description": "Indicate the routetable Id for management subnet of FGTB (A VPC endpoint to S3 bucket will be created)"
+			"Description": "Indicate the routetable Id for management subnet of FGTB. Ex: rtb-XXXXX (A VPC endpoint to S3 bucket will be created)"
 		},
 		"FGTInstanceType": {
 			"Type": "String",
