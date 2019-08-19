@@ -1431,9 +1431,11 @@
 								"import cfnresponse",
 								"import json",
 								"import logging",
+								"import ipaddress",
 								"logger = logging.getLogger()",
 								"logger.setLevel(logging.INFO)",
 								"s3 = boto3.client('s3')",
+								"ec2client = boto3.client('ec2')",
 								"",
 								"template = '''\\",
 								"config system global",
@@ -1521,8 +1523,16 @@
 								"'''",
 								"",
 								"def handler(event, context):",
+								"    subcidr=[]",
+								{"Fn::Join":["",["    for sub in ['",{"Fn::Join":["','",[{"Ref":"PublicSubnet1"},{"Ref":"PrivateSubnet1"},{"Ref":"MgmtSubnet1"},{"Ref":"PublicSubnet2"},{"Ref":"PrivateSubnet2"},{"Ref":"MgmtSubnet2"}]]},"']:"]]},
+								"            net=sub.split('/')[0]",
+								"            routerIP=ipaddress.ip_address(net)+1",
+								"            subcidr.append(str(routerIP))",
+								"",
 								"    dict1 = ast.literal_eval(event['ResourceProperties']['FGTAInfo'])",
+								"    dict1.update({'PublicSubnetRouterIP':subcidr[0],'PrivateSubnetRouterIP':subcidr[1],'HAmgmtSubnetRouterIP':subcidr[2]})",
 								"    dict2 = ast.literal_eval(event['ResourceProperties']['FGTBInfo'])",
+								"    dict2.update({'PublicSubnetRouterIP':subcidr[3],'PrivateSubnetRouterIP':subcidr[4],'HAmgmtSubnetRouterIP':subcidr[5]})",
 								"    fgtA_conf = template.format(**dict1)",
 								"    fgtB_conf = template.format(**dict2)",
 								"    fgtA_result = False",
@@ -1568,7 +1578,7 @@
 				},
 				"Timeout": 120,
 				"Handler": "index.handler",
-				"Runtime": "python2.7",
+				"Runtime": "python3.6",
 				"MemorySize": 128
 			}
 		},
@@ -1632,213 +1642,9 @@
 								]
 							},
 							"',",
-							"'PublicSubnetRouterIP':'",
-							{
-								"Fn::Join": [
-									"",
-									[
-										{
-											"Fn::Select": [
-												"0",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Ref": "PublicSubnet1"
-														}
-													]
-												}
-											]
-										},
-										".",
-										{
-											"Fn::Select": [
-												"1",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Ref": "PublicSubnet1"
-														}
-													]
-												}
-											]
-										},
-										".",
-										{
-											"Fn::Select": [
-												"2",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Ref": "PublicSubnet1"
-														}
-													]
-												}
-											]
-										},
-										".1"
-									]
-								]
-							},
-							"',",
-							"'HeartbeatSubnetRouterIP':'",
-							{
-								"Fn::Join": [
-									"",
-									[
-										{
-											"Fn::Select": [
-												"0",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Ref": "HeartbeatSubnet1"
-														}
-													]
-												}
-											]
-										},
-										".",
-										{
-											"Fn::Select": [
-												"1",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Ref": "HeartbeatSubnet1"
-														}
-													]
-												}
-											]
-										},
-										".",
-										{
-											"Fn::Select": [
-												"2",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Ref": "HeartbeatSubnet1"
-														}
-													]
-												}
-											]
-										},
-										".1"
-									]
-								]
-							},
-							"',",
-							"'PrivateSubnetRouterIP':'",
-							{
-								"Fn::Join": [
-									"",
-									[
-										{
-											"Fn::Select": [
-												"0",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Ref": "PrivateSubnet1"
-														}
-													]
-												}
-											]
-										},
-										".",
-										{
-											"Fn::Select": [
-												"1",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Ref": "PrivateSubnet1"
-														}
-													]
-												}
-											]
-										},
-										".",
-										{
-											"Fn::Select": [
-												"2",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Ref": "PrivateSubnet1"
-														}
-													]
-												}
-											]
-										},
-										".1"
-									]
-								]
-							},
-							"',",
 							"'HAsecret':'",
 							{
 								"Ref": "HAsecret"
-							},
-							"',",
-							"'HAmgmtSubnetRouterIP':'",
-							{
-								"Fn::Join": [
-									"",
-									[
-										{
-											"Fn::Select": [
-												"0",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Ref": "MgmtSubnet1"
-														}
-													]
-												}
-											]
-										},
-										".",
-										{
-											"Fn::Select": [
-												"1",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Ref": "MgmtSubnet1"
-														}
-													]
-												}
-											]
-										},
-										".",
-										{
-											"Fn::Select": [
-												"2",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Ref": "MgmtSubnet1"
-														}
-													]
-												}
-											]
-										},
-										".1"
-									]
-								]
 							},
 							"',",
 							"'HApeer':'",
@@ -1902,213 +1708,9 @@
 								]
 							},
 							"',",
-							"'PublicSubnetRouterIP':'",
-							{
-								"Fn::Join": [
-									"",
-									[
-										{
-											"Fn::Select": [
-												"0",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Ref": "PublicSubnet2"
-														}
-													]
-												}
-											]
-										},
-										".",
-										{
-											"Fn::Select": [
-												"1",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Ref": "PublicSubnet2"
-														}
-													]
-												}
-											]
-										},
-										".",
-										{
-											"Fn::Select": [
-												"2",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Ref": "PublicSubnet2"
-														}
-													]
-												}
-											]
-										},
-										".1"
-									]
-								]
-							},
-							"',",
-							"'HeartbeatSubnetRouterIP':'",
-							{
-								"Fn::Join": [
-									"",
-									[
-										{
-											"Fn::Select": [
-												"0",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Ref": "HeartbeatSubnet2"
-														}
-													]
-												}
-											]
-										},
-										".",
-										{
-											"Fn::Select": [
-												"1",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Ref": "HeartbeatSubnet2"
-														}
-													]
-												}
-											]
-										},
-										".",
-										{
-											"Fn::Select": [
-												"2",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Ref": "HeartbeatSubnet2"
-														}
-													]
-												}
-											]
-										},
-										".1"
-									]
-								]
-							},
-							"',",
-							"'PrivateSubnetRouterIP':'",
-							{
-								"Fn::Join": [
-									"",
-									[
-										{
-											"Fn::Select": [
-												"0",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Ref": "PrivateSubnet2"
-														}
-													]
-												}
-											]
-										},
-										".",
-										{
-											"Fn::Select": [
-												"1",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Ref": "PrivateSubnet2"
-														}
-													]
-												}
-											]
-										},
-										".",
-										{
-											"Fn::Select": [
-												"2",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Ref": "PrivateSubnet2"
-														}
-													]
-												}
-											]
-										},
-										".1"
-									]
-								]
-							},
-							"',",
 							"'HAsecret':'",
 							{
 								"Ref": "HAsecret"
-							},
-							"',",
-							"'HAmgmtSubnetRouterIP':'",
-							{
-								"Fn::Join": [
-									"",
-									[
-										{
-											"Fn::Select": [
-												"0",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Ref": "MgmtSubnet2"
-														}
-													]
-												}
-											]
-										},
-										".",
-										{
-											"Fn::Select": [
-												"1",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Ref": "MgmtSubnet2"
-														}
-													]
-												}
-											]
-										},
-										".",
-										{
-											"Fn::Select": [
-												"2",
-												{
-													"Fn::Split": [
-														".",
-														{
-															"Ref": "MgmtSubnet2"
-														}
-													]
-												}
-											]
-										},
-										".1"
-									]
-								]
 							},
 							"',",
 							"'HApeer':'",
