@@ -1528,7 +1528,7 @@
 								"            net=sub.split('/')[0]",
 								"            routerIP=ipaddress.ip_address(net)+1",
 								"            subcidr.append(str(routerIP))",
-								"    print(subcidr)",
+								"",
 								"    dict1 = ast.literal_eval(event['ResourceProperties']['FGTAInfo'])",
 								"    dict1.update({'PublicSubnetRouterIP':subcidr[0],'PrivateSubnetRouterIP':subcidr[1],'HAmgmtSubnetRouterIP':subcidr[2]})",
 								"    dict2 = ast.literal_eval(event['ResourceProperties']['FGTBInfo'])",
