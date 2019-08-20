@@ -1442,7 +1442,7 @@
 								"edit port1",
 								"set alias public",
 								"set mode static",
-								"set ip {Port1IP}/24",
+								"set ip {Port1IP}/{Mask1}",
 								"set allowaccess ping https ssh",
 								"set mtu-override enable",
 								"set mtu 9001",
@@ -1450,7 +1450,7 @@
 								"edit port2",
 								"set alias private",
 								"set mode static",
-								"set ip {Port2IP}/24",
+								"set ip {Port2IP}/{Mask2}",
 								"set allowaccess ping https ssh",
 								"set mtu-override enable",
 								"set mtu 9001",
@@ -1458,7 +1458,7 @@
 								"edit port3",
 								"set alias hasync",
 								"set mode static",
-								"set ip {Port3IP}/24",
+								"set ip {Port3IP}/{Mask3}",
 								"set allowaccess ping",
 								"set mtu-override enable",
 								"set mtu 9001",
@@ -1466,7 +1466,7 @@
 								"edit port4",
 								"set alias hamgmt",
 								"set mode static",
-								"set ip {Port4IP}/24",
+								"set ip {Port4IP}/{Mask4}",
 								"set allowaccess ping https ssh",
 								"set mtu-override enable",
 								"set mtu 9001",
@@ -1614,12 +1614,22 @@
 								]
 							},
 							"',",
+							"'Mask1':'",
+							{
+								"Fn::Select" : [ "1", { "Fn::Split": ["/", {"Ref": "PublicSubnet1"}]}]
+							},
+							"',",
 							"'Port2IP':'",
 							{
 								"Fn::GetAtt": [
 									"FGTAENI1",
 									"PrimaryPrivateIpAddress"
 								]
+							},
+							"',",
+							"'Mask2':'",
+							{
+								"Fn::Select" : [ "1", { "Fn::Split": ["/", {"Ref": "PrivateSubnet1"}]}]
 							},
 							"',",
 							"'Port3IP':'",
@@ -1630,12 +1640,22 @@
 								]
 							},
 							"',",
+							"'Mask3':'",
+							{
+								"Fn::Select" : [ "1", { "Fn::Split": ["/", {"Ref": "HeartbeatSubnet1"}]}]
+							},
+							"',",
 							"'Port4IP':'",
 							{
 								"Fn::GetAtt": [
 									"FGTAENI3",
 									"PrimaryPrivateIpAddress"
 								]
+							},
+							"',",
+							"'Mask4':'",
+							{
+								"Fn::Select" : [ "1", { "Fn::Split": ["/", {"Ref": "MgmtSubnet1"}]}]
 							},
 							"',",
 							"'HAsecret':'",
@@ -1680,12 +1700,22 @@
 								]
 							},
 							"',",
+							"'Mask1':'",
+							{
+								"Fn::Select" : [ "1", { "Fn::Split": ["/", {"Ref": "PublicSubnet2"}]}]
+							},
+							"',",
 							"'Port2IP':'",
 							{
 								"Fn::GetAtt": [
 									"FGTBENI1",
 									"PrimaryPrivateIpAddress"
 								]
+							},
+							"',",
+							"'Mask2':'",
+							{
+								"Fn::Select" : [ "1", { "Fn::Split": ["/", {"Ref": "PrivateSubnet2"}]}]
 							},
 							"',",
 							"'Port3IP':'",
@@ -1696,12 +1726,22 @@
 								]
 							},
 							"',",
+							"'Mask3':'",
+							{
+								"Fn::Select" : [ "1", { "Fn::Split": ["/", {"Ref": "HeartbeatSubnet2"}]}]
+							},
+							"',",
 							"'Port4IP':'",
 							{
 								"Fn::GetAtt": [
 									"FGTBENI3",
 									"PrimaryPrivateIpAddress"
 								]
+							},
+							"',",
+							"'Mask4':'",
+							{
+								"Fn::Select" : [ "1", { "Fn::Split": ["/", {"Ref": "MgmtSubnet2"}]}]
 							},
 							"',",
 							"'HAsecret':'",

@@ -11,13 +11,19 @@
 					"Parameters": [
 						"VPCCIDR",
 						"PublicSubnet1",
+						"PublicSubnet1RouterIP",
 						"PrivateSubnet1",
+						"PrivateSubnet1RouterIP",
 						"HeartbeatSubnet1",
 						"MgmtSubnet1",
+						"MgmtSubnet1RouterIP",
 						"PublicSubnet2",
+						"PublicSubnet2RouterIP",
 						"PrivateSubnet2",
+						"PrivateSubnet2RouterIP",
 						"HeartbeatSubnet2",
-						"MgmtSubnet2"
+						"MgmtSubnet2",
+						"MgmtSubnet2RouterIP"
 					]
 				},
 				{
@@ -93,7 +99,7 @@
 			"Default": "10.0.4.0/24",
 			"Description": "Provide a network CIDR for the Mgmt subnet1"
         },
-        "HAmgmtSubnet1RouterIP": {
+        "MgmtSubnet1RouterIP": {
 			"Type": "String",
 			"Default": "10.0.4.1",
 			"Description": "Provide the IP of the gateway for the management subnet1"
@@ -128,7 +134,7 @@
 			"Default": "10.0.40.0/24",
 			"Description": "Provide a network CIDR for the Mgmt subnet2"
         },
-        "HAmgmtSubnet2RouterIP": {
+        "MgmtSubnet2RouterIP": {
 			"Type": "String",
 			"Default": "10.0.40.1",
 			"Description": "Provide the IP of the gateway for the management subnet2"
@@ -789,7 +795,7 @@
                             "edit 2",
                             { "Fn::Join" : [ "", [ "set dst ",{"Ref":"VPCCIDR"}]]},
                             "set device port2",
-                            { "Fn::Join" : [ "", [ "set dst ",{"Ref":"PrivateSubnet1RouterIP"}]]},
+                            { "Fn::Join" : [ "", [ "set gateway ",{"Ref":"PrivateSubnet1RouterIP"}]]},
                             "next",
                             "end",
                             "config firewall policy",
@@ -817,13 +823,13 @@
                             "config ha-mgmt-interface",
                             "edit 1",
                             "set interface port4",
-                            { "Fn::Join" : [ "", [ "set gateway ",{"Ref":"HAmgmtSubnet1RouterIP"}]]},
+                            { "Fn::Join" : [ "", [ "set gateway ",{"Ref":"MgmtSubnet1RouterIP"}]]},
                             "next",
                             "end",
                             "set override disable",
                             "set priority 255",
                             "set unicast-hb enable",
-                            { "Fn::Join" : [ "", [ "set unicast-hb-peerip ",{"Ref":"FortiGateBHeartbeatIP"}]]},
+                            { "Fn::Join" : [ "", [ "set unicast-hb-peerip ",{"Fn::Select" : [ "0", { "Fn::Split": ["/", {"Ref": "FortiGateBHeartbeatIP"}]}]}]]},
                             "end"
 							]
 						]
@@ -917,7 +923,7 @@
                             "edit port3",
                             "set alias hasync",
                             "set mode static",
-                            { "Fn::Join" : [ "", [ "set ip ",{"Ref":"FortiGateAHeartbeatIP"}]]},
+                            { "Fn::Join" : [ "", [ "set ip ",{"Ref":"FortiGateBHeartbeatIP"}]]},
                             "set allowaccess ping",
                             "set mtu-override enable",
                             "set mtu 9001",
@@ -939,7 +945,7 @@
                             "edit 2",
                             { "Fn::Join" : [ "", [ "set dst ",{"Ref":"VPCCIDR"}]]},
                             "set device port2",
-                            { "Fn::Join" : [ "", [ "set dst ",{"Ref":"PrivateSubnet2RouterIP"}]]},
+                            { "Fn::Join" : [ "", [ "set gateway ",{"Ref":"PrivateSubnet2RouterIP"}]]},
                             "next",
                             "end",
                             "config firewall policy",
@@ -967,13 +973,13 @@
                             "config ha-mgmt-interface",
                             "edit 1",
                             "set interface port4",
-                            { "Fn::Join" : [ "", [ "set gateway ",{"Ref":"HAmgmtSubnet2RouterIP"}]]},
+                            { "Fn::Join" : [ "", [ "set gateway ",{"Ref":"MgmtSubnet2RouterIP"}]]},
                             "next",
                             "end",
                             "set override disable",
                             "set priority 100",
                             "set unicast-hb enable",
-                            { "Fn::Join" : [ "", [ "set unicast-hb-peerip ",{"Ref":"FortiGateAHeartbeatIP"}]]},
+                            { "Fn::Join" : [ "", [ "set unicast-hb-peerip ",{"Fn::Select" : [ "0", { "Fn::Split": ["/", {"Ref": "FortiGateAHeartbeatIP"}]}]}]]},
                             "end"
 							]
 						]
