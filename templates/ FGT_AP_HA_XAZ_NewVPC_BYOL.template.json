@@ -66,42 +66,42 @@
 		"PublicSubnet1": {
 			"Type": "String",
 			"Default": "10.0.1.0/24",
-			"Description": "Select the Public1 subnet"
+			"Description": "Provide a network CIDR for the Public Subnet1"
 		},
 		"PrivateSubnet1": {
 			"Type": "String",
 			"Default": "10.0.2.0/24",
-			"Description": "Select the Private1 subnet"
+			"Description": "Provide a network CIDR for the Private subnet1"
 		},
 		"HeartbeatSubnet1": {
 			"Type": "String",
 			"Default": "10.0.3.0/24",
-			"Description": "Select the Heartbeat1 subnet"
+			"Description": "Provide a network CIDR for the Heartbeat subnet1"
 		},
 		"MgmtSubnet1": {
 			"Type": "String",
 			"Default": "10.0.4.0/24",
-			"Description": "Select the Mgmt1 subnet"
+			"Description": "Provide a network CIDR for the Mgmt subnet1"
 		},
 		"PublicSubnet2": {
 			"Type": "String",
 			"Default": "10.0.10.0/24",
-			"Description": "Select the Public2 subnet"
+			"Description": "Provide a network CIDR for the Public Subnet2"
 		},
 		"PrivateSubnet2": {
 			"Type": "String",
 			"Default": "10.0.20.0/24",
-			"Description": "Select the Private2 subnet"
+			"Description": "Provide a network CIDR for the Private subnet2"
 		},
 		"HeartbeatSubnet2": {
 			"Type": "String",
 			"Default": "10.0.30.0/24",
-			"Description": "Select the Heartbeat2 subnet"
+			"Description": "Provide a network CIDR for the Heartbeat subnet2"
 		},
 		"MgmtSubnet2": {
 			"Type": "String",
 			"Default": "10.0.40.0/24",
-			"Description": "Select the Mgmt2 subnet"
+			"Description": "Provide a network CIDR for the Mgmt subnet2"
 		},
 		"FGTInstanceType": {
 			"Type": "String",
