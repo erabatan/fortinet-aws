@@ -1,7 +1,7 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Conditions": {},
-  "Description": "test: AWS CloudFormation Template to launch a VPC with two subnets, a host which generates compromised devices + 2 testing devices + FortiGate",
+  "Description": "AWS CloudFormation Template to launch a VPC with two subnets, a host which generates compromised devices + 2 testing devices + FortiGate",
   "Metadata": {
     "AWS::CloudFormation::Interface": {
       "ParameterGroups": [
