@@ -1015,7 +1015,7 @@
         "Properties": {
           "Name": "API-to-Lambda",
           "Description": "API used to launch lambda function test LambdaAddQuarantine",
-          "ApiKeySourceType": "HEADER",
+          "ApiKeyourceTypeS": "HEADER",
           "FailOnWarnings": true
         }
       },
