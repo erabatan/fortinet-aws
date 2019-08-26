@@ -12,10 +12,7 @@
               "GitHubUser",
               "GitHubRepoName",
               "SourceRepoBranch",
-              "ReleaseBranch",
-              "GitHubOAuthToken",
-              "CodePipelineRoleArn",
-              "CodeBuildRoleArn"
+              "GitHubOAuthToken"
             ]
           },
           {
@@ -41,10 +38,6 @@
       },
       "SourceRepoBranch" : {
         "Description" : "Enter the branch name to be monitored",
-        "Type" : "String"
-      },
-      "ReleaseBranch" : {
-        "Description" : "Enter the release branch name. On successfull build, above branch will be merged into this branch.",
         "Type" : "String"
       },
       "GitHubOAuthToken" : {
@@ -96,7 +89,10 @@
             } ]
           },
           "Path" : "/",
-          "ManagedPolicyArns" : [ "arn:aws:iam::aws:policy/AdministratorAccess" ]
+          "ManagedPolicyArns" : [ "arn:aws:iam::aws:policy/AdministratorAccess" ],
+          "RoleName": {
+            "Fn::Sub" : "${AWS::StackName}-CodeBuildRole-${AWS::Region}"
+          }
         }
       },
       "CodePipelineServiceRole" : {
@@ -114,6 +110,9 @@
             } ]
           },
           "Path" : "/",
+          "RoleName": {
+            "Fn::Sub" : "${AWS::StackName}-CodePipelineRole-${AWS::Region}"
+          },
           "Policies" : [ {
             "PolicyName" : {
               "Fn::Sub" : "${AWS::StackName}-CodePipelineService-${AWS::Region}"
@@ -151,7 +150,7 @@
             }
           },
           "RoleArn" : {
-            "Fn::Join":["",{"Fn::Sub":"arn:aws:iam::${AWS::AccountId}:policy/service-role/"},{"Ref":"CodePipelineServiceRole"}]
+            "Fn::Join":["",[{"Fn::Sub":"arn:aws:iam::${AWS::AccountId}:role/"},{"Ref" : "CodePipelineServiceRole"}]]
           },
           "Stages" : [ 
             {
@@ -217,7 +216,7 @@
             "Fn::Sub" : "Submit build jobs for ${GitHubRepoName} as part of CI/CD pipeline"
           },
           "ServiceRole" : {
-            "Fn::Join":["",{"Fn::Sub":"arn:aws:iam::${AWS::AccountId}:policy/service-role/"},{"Ref":"CodeBuildlineServiceRole"}]
+            "Fn::Join":["",[{"Fn::Sub":"arn:aws:iam::${AWS::AccountId}:role/"},{"Ref" : "CodeBuildServiceRole"}]]
           },
           "Artifacts" : {
             "Type" : "CODEPIPELINE"
