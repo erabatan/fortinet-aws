@@ -4,7 +4,7 @@ global:
   qsname: fortinet-aws
   regions:
   - eu-central-1
-  reporting: true
+  reporting: false
 tests:
   SDNscenario1:
     parameter_input: taskcat_project_override.json
