@@ -1,0 +1,13 @@
+global:
+  marketplace-ami: false
+  owner: erabatan@fortinet.com
+  qsname: fortinet-aws
+  regions:
+  - eu-west-2
+  reporting: true
+tests:
+  SDNscenario1:
+    parameter_input: taskcat_project_override.json
+    regions:
+    - eu-west-2
+    template_file: DemoForSE/AutomationSDNtemplate.json
