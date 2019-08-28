@@ -36,11 +36,7 @@
 						"FGTInstanceType",
 						"CIDRForFGTAccess",
 						"KeyPair",
-						"HAsecret",
-						"InitS3Bucket",
-						"InitS3BucketRegion",
-						"FortiGateALicenseFile",
-						"FortiGateBLicenseFile"
+						"HAsecret"
 					]
 				},
 				{
