@@ -20,8 +20,7 @@
               "default": "Source configuration"
             },
             "Parameters": [
-              "ArtifactBucket",
-              "ArtifactBucketRegion"
+              "ArtifactBucket"
             ]
           }
         ]
@@ -49,28 +48,6 @@
         "Type": "String",
         "MinLength": "1",
         "Description": "Provide the Init S3 Bucket name, where your license files and config files exists"
-      },
-      "ArtifactBucketRegion": {
-        "Type": "String",
-        "Description": "Select the Region where the Init S3 Bucket exists",
-        "AllowedValues": [
-          "ap-northeast-1",
-          "ap-northeast-2",
-          "ap-south-1",
-          "ap-southeast-1",
-          "ap-southeast-2",
-          "ca-central-1",
-          "eu-central-1",
-          "eu-north-1",
-          "eu-west-1",
-          "eu-west-2",
-          "eu-west-3",
-          "sa-east-1",
-          "us-east-1",
-          "us-east-2",
-          "us-west-1",
-          "us-west-2"
-        ]
       }
     },
     "Resources" : {
