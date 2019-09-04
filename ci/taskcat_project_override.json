@@ -28,7 +28,7 @@
         "ParameterValue": "fgt1.lic"
     },
     {
-        "ParameterKey": "VPCID",
-        "ParameterValue": "fgt1.lic"
+        "ParameterKey": "VPCCIDR",
+        "ParameterValue": "10.0.0.0/16"
     }
 ]
