@@ -6,8 +6,13 @@ global:
   - eu-west-2
   reporting: true
 tests:
-  SDNscenario1:
+  HA-AP-NewVPC_BYOL:
     parameter_input: taskcat_project_override.json
     regions:
     - eu-west-2
-    template_file: DemoForSE/AutomationSDNtemplate.json
+    template_file: HA/FGT_AP_HA_XAZ_NewVPC_BYOL.template.json
+  HA-AP-NewVPC_PAYG:
+    parameter_input: taskcat_project_override.json
+    regions:
+    - eu-west-2
+    template_file: HA/FGT_AP_HA_XAZ_NewVPC_PAYG.template.json

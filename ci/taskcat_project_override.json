@@ -12,7 +12,23 @@
         "ParameterValue": "fortinet"
     },
     {
-        "ParameterKey": "KeyPair",
-        "ParameterValue": "london-erabatan"
+        "ParameterKey": "InitS3Bucket",
+        "ParameterValue": "fortis3emea-eu-west-2"
+    },
+    {
+        "ParameterKey": "InitS3BucketRegion",
+        "ParameterValue": "eu-west-2"
+    },
+    {
+        "ParameterKey": "FortiGateALicenseFile",
+        "ParameterValue": "fgt1.lic"
+    },
+    {
+        "ParameterKey": "FortiGateBLicenseFile",
+        "ParameterValue": "fgt1.lic"
+    },
+    {
+        "ParameterKey": "VPCID",
+        "ParameterValue": "fgt1.lic"
     }
 ]
