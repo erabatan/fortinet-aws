@@ -326,7 +326,7 @@
                   "",
                   "def handler(event,context):",
                   "    response = client.start_pipeline_execution(",
-                  {"Fn::Join":["",["    name='",{"Ref":"CodePipeline"},"',"]]},
+                  {"Fn::Join":["",["    name='",{"Ref":"CodePipeline"},"'"]]},
                   "    )",
                   "    if response['ResponseMetadata']['HTTPStatusCode'] == 200:",
                   "        return {",
