@@ -8,6 +8,10 @@
         "ParameterValue": "eu-west-2b"
     },
     {
+        "ParameterKey": "KeyPair",
+        "ParameterValue": "london-erabatan"
+    },
+    {
         "ParameterKey": "HAsecret",
         "ParameterValue": "fortinet"
     },
