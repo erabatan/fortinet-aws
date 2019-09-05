@@ -1,6 +1,6 @@
 {
 	"AWSTemplateFormatVersion": "2010-09-09",
-	"Description": "Create a VPC then launch two FortiGates in A-P cluster running in a dual AZ",
+	"Description": "Create a VPC then launch two FortiGates in A-P cluster running in a dual AZs",
 	"Metadata": {
 		"AWS::CloudFormation::Interface": {
 			"ParameterGroups": [
