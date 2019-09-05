@@ -25,7 +25,7 @@
     },
     {
         "ParameterKey": "FortiGateBLicenseFile",
-        "ParameterValue": "fgt1.lic"
+        "ParameterValue": "fgt2.lic"
     },
     {
         "ParameterKey": "VPCCIDR",
