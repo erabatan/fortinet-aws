@@ -6,12 +6,12 @@ global:
   - eu-west-2
   reporting: true
 tests:
-  HA-AP-NewVPC_BYOL:
+  byolnew:
     parameter_input: taskcat_project_override.json
     regions:
     - eu-west-2
     template_file: ha-byol-new.json
-  HA-AP-NewVPC_PAYG:
+  paygnew:
     parameter_input: taskcat_project_override.json
     regions:
     - eu-west-2
