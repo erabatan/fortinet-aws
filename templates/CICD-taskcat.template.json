@@ -311,7 +311,10 @@
             }]
           },
           "ResourceId": {"Ref": "APIgwResource"},
-          "RestApiId": {"Ref": "APItoLambda"}
+          "RestApiId": {"Ref": "APItoLambda"},
+          "MethodResponses": [{
+            "StatusCode": 200
+          }]
         }
       },
       "LambdaLaunchPipeline": {
