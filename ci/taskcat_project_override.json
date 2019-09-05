@@ -9,7 +9,7 @@
     },
     {
         "ParameterKey": "KeyPair",
-        "ParameterValue": "london-erabatan"
+        "ParameterValue": "london-key"
     },
     {
         "ParameterKey": "HAsecret",
