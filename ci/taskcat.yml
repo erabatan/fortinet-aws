@@ -11,8 +11,3 @@ tests:
     regions:
     - eu-west-2
     template_file: FGT_AP_HA_XAZ_newVPC_BYOL.template.json
-  paygnew:
-    parameter_input: taskcat_param_payg.json
-    regions:
-    - eu-west-2
-    template_file: FGT_AP_HA_XAZ_newVPC_PAYG.template.json
