@@ -10,9 +10,9 @@ tests:
     parameter_input: taskcat_project_override.json
     regions:
     - eu-west-2
-    template_file: FGT_AP_HA_XAZ_NewVPC_BYOL.template.json
+    template_file: ha-byol-new.json
   HA-AP-NewVPC_PAYG:
     parameter_input: taskcat_project_override.json
     regions:
     - eu-west-2
-    template_file: FGT_AP_HA_XAZ_NewVPC_PAYG.template.json
+    template_file: ha-payg-new.json
