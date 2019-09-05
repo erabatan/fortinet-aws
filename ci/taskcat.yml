@@ -7,12 +7,12 @@ global:
   reporting: true
 tests:
   byolnew:
-    parameter_input: taskcat_project_override.json
+    parameter_input: taskcat_param_byol.json
     regions:
     - eu-west-2
-    template_file: ha-byol-new.json
+    template_file: FGT_AP_HA_XAZ_newVPC_BYOL.template.json
   paygnew:
-    parameter_input: taskcat_project_override.json
+    parameter_input: taskcat_param_payg.json
     regions:
     - eu-west-2
-    template_file: ha-payg-new.json
+    template_file: FGT_AP_HA_XAZ_newVPC_PAYG.template.json
