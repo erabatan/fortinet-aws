@@ -78,7 +78,7 @@
 		"PrivateSubnet1": {
 			"Type": "String",
 			"Default": "10.0.2.0/24",
-			"Description": "Provide a network CIDR for the Private subnet1"
+			"Description": "Provide a network CIDR for the private subnet1"
         },
         "PrivateSubnet1RouterIP": {
 			"Type": "String",
@@ -88,12 +88,12 @@
 		"HeartbeatSubnet1": {
 			"Type": "String",
 			"Default": "10.0.3.0/24",
-			"Description": "Provide a network CIDR for the Heartbeat subnet1"
+			"Description": "Provide a network CIDR for the heartbeat subnet1"
 		},
 		"MgmtSubnet1": {
 			"Type": "String",
 			"Default": "10.0.4.0/24",
-			"Description": "Provide a network CIDR for the Mgmt subnet1"
+			"Description": "Provide a network CIDR for the management subnet1"
         },
         "MgmtSubnet1RouterIP": {
 			"Type": "String",
@@ -103,7 +103,7 @@
 		"PublicSubnet2": {
 			"Type": "String",
 			"Default": "10.0.10.0/24",
-			"Description": "Provide a network CIDR for the Public Subnet2"
+			"Description": "Provide a network CIDR for the public subnet2"
         },
         "PublicSubnet2RouterIP": {
 			"Type": "String",
@@ -113,7 +113,7 @@
 		"PrivateSubnet2": {
 			"Type": "String",
 			"Default": "10.0.20.0/24",
-			"Description": "Provide a network CIDR for the Private subnet2"
+			"Description": "Provide a network CIDR for the private subnet2"
         },
         "PrivateSubnet2RouterIP": {
 			"Type": "String",
@@ -123,12 +123,12 @@
 		"HeartbeatSubnet2": {
 			"Type": "String",
 			"Default": "10.0.30.0/24",
-			"Description": "Provide a network CIDR for the Heartbeat subnet2"
+			"Description": "Provide a network CIDR for the heartbeat subnet2"
 		},
 		"MgmtSubnet2": {
 			"Type": "String",
 			"Default": "10.0.40.0/24",
-			"Description": "Provide a network CIDR for the Mgmt subnet2"
+			"Description": "Provide a network CIDR for the management subnet2"
         },
         "MgmtSubnet2RouterIP": {
 			"Type": "String",
