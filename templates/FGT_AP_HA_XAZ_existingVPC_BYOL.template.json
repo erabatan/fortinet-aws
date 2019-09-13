@@ -70,35 +70,35 @@
 		},
 		"PublicSubnet1": {
 			"Type": "AWS::EC2::Subnet::Id",
-			"Description": "Select the Public1 subnet"
+			"Description": "Select the public subnet1"
 		},
 		"PrivateSubnet1": {
 			"Type": "AWS::EC2::Subnet::Id",
-			"Description": "Select the Private1 subnet"
+			"Description": "Select the private subnet1"
 		},
 		"HeartbeatSubnet1": {
 			"Type": "AWS::EC2::Subnet::Id",
-			"Description": "Select the Heartbeat1 subnet"
+			"Description": "Select the heartbeat subnet1"
 		},
 		"MgmtSubnet1": {
 			"Type": "AWS::EC2::Subnet::Id",
-			"Description": "Select the Mgmt1 subnet"
+			"Description": "Select the management subnet1"
 		},
 		"PublicSubnet2": {
 			"Type": "AWS::EC2::Subnet::Id",
-			"Description": "Select the Public2 subnet"
+			"Description": "Select the public subnet2"
 		},
 		"PrivateSubnet2": {
 			"Type": "AWS::EC2::Subnet::Id",
-			"Description": "Select the Private2 subnet"
+			"Description": "Select the private subnet2"
 		},
 		"HeartbeatSubnet2": {
 			"Type": "AWS::EC2::Subnet::Id",
-			"Description": "Select the Heartbeat2 subnet"
+			"Description": "Select the heartbeat subnet2"
 		},
 		"MgmtSubnet2": {
 			"Type": "AWS::EC2::Subnet::Id",
-			"Description": "Select the Mgmt2 subnet"
+			"Description": "Select the management subnet2"
 		},
 		"RouteTableMgmtSubnet2": {
 			"Type": "String",
