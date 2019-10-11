@@ -45,8 +45,14 @@
 						"default": "FortiGate IP Configuration"
 					},
 					"Parameters": [
+						"IPAPublicSubnet1",
+						"IPAPrivateSubnet1",
 						"FortiGateAHeartbeatIP",
-						"FortiGateBHeartbeatIP"
+						"IPAMgmtSubnet1",
+						"IPBPublicSubnet2",
+						"IPBPrivateSubnet2",
+						"FortiGateBHeartbeatIP",
+						"IPBMgmtSubnet2"
 					]
 				}
 			]
@@ -72,7 +78,11 @@
 		"PublicSubnet1": {
 			"Type": "AWS::EC2::Subnet::Id",
 			"Description": "Select the Public1 subnet"
-        },
+		},
+		"IPAPublicSubnet1": {
+			"Type": "String",
+			"Description": "Indicate the IP of the interface of FGTA attached to public subnet1. Ex: 10.0.1.12/24"
+		},
         "PublicSubnet1RouterIP": {
 			"Type": "String",
 			"Default": "10.0.1.1",
@@ -81,7 +91,11 @@
 		"PrivateSubnet1": {
 			"Type": "AWS::EC2::Subnet::Id",
 			"Description": "Select the private subnet1"
-        },
+		},
+		"IPAPrivateSubnet1": {
+			"Type": "String",
+			"Description": "Indicate the IP of the interface of FGTA attached to private subnet1. Ex: 10.0.2.12/24"
+		},
         "PrivateSubnet1RouterIP": {
 			"Type": "String",
 			"Default": "10.0.2.1",
@@ -94,7 +108,11 @@
 		"MgmtSubnet1": {
 			"Type": "AWS::EC2::Subnet::Id",
 			"Description": "Select the management subnet1"
-        },
+		},
+		"IPAMgmtSubnet1": {
+			"Type": "String",
+			"Description": "Indicate the IP of the interface of FGTA attached to management subnet1.  Ex: 10.0.4.12/24"
+		},
         "MgmtSubnet1RouterIP": {
 			"Type": "String",
 			"Default": "10.0.4.1",
@@ -103,16 +121,24 @@
 		"PublicSubnet2": {
 			"Type": "AWS::EC2::Subnet::Id",
 			"Description": "Select the public subnet2"
-        },
+		},
+		"IPBPublicSubnet2": {
+			"Type": "String",
+			"Description": "Indicate the IP of the interface of FGTB attached to public subnet2. Ex: 10.0.10.12/24"
+		},
         "PublicSubnet2RouterIP": {
 			"Type": "String",
             "Default": "10.0.10.1",
             "Description": "Provide the IP of the gateway for the public subnet2"
-        },
+		},
 		"PrivateSubnet2": {
 			"Type": "AWS::EC2::Subnet::Id",
 			"Description": "Select the private subnet2"
-        },
+		},
+		"IPBPrivateSubnet2": {
+			"Type": "String",
+			"Description": "Indicate the IP of the interface of FGTB attached to private subnet2. Ex: 10.0.20.12/24"
+		},
         "PrivateSubnet2RouterIP": {
 			"Type": "String",
 			"Default": "10.0.20.1",
@@ -125,7 +151,11 @@
 		"MgmtSubnet2": {
 			"Type": "AWS::EC2::Subnet::Id",
 			"Description": "Select the management subnet2"
-        },
+		},
+		"IPBMgmtSubnet2": {
+			"Type": "String",
+			"Description": "Indicate the IP of the interface of FGTB attached to management subnet2. Ex: 10.0.40.12/24"
+		},
         "MgmtSubnet2RouterIP": {
 			"Type": "String",
 			"Default": "10.0.40.1",
@@ -392,14 +422,16 @@
                             "config system interface",
                             "edit port1",
                             "set alias public",
-                            "set mode dhcp",
+							"set mode static",
+							{ "Fn::Join" : [ "", [ "set ip ",{"Ref":"IPAPublicSubnet1"}]]},
                             "set allowaccess ping https ssh",
                             "set mtu-override enable",
                             "set mtu 9001",
                             "next",
                             "edit port2",
                             "set alias private",
-                            "set mode dhcp",
+							"set mode static",
+							{ "Fn::Join" : [ "", [ "set ip ",{"Ref":"IPAPrivateSubnet1"}]]},
                             "set allowaccess ping https ssh",
                             "set mtu-override enable",
                             "set mtu 9001",
@@ -414,7 +446,8 @@
                             "next",
                             "edit port4",
                             "set alias hamgmt",
-                            "set mode dhcp",
+							"set mode static",
+							{ "Fn::Join" : [ "", [ "set ip ",{"Ref":"IPAMgmtSubnet1"}]]},
                             "set allowaccess ping https ssh",
                             "set mtu-override enable",
                             "set mtu 9001",
@@ -542,14 +575,16 @@
                             "config system interface",
                             "edit port1",
                             "set alias public",
-                            "set mode dhcp",
+							"set mode static",
+							{ "Fn::Join" : [ "", [ "set ip ",{"Ref":"IPBPublicSubnet2"}]]},
                             "set allowaccess ping https ssh",
                             "set mtu-override enable",
                             "set mtu 9001",
                             "next",
                             "edit port2",
                             "set alias private",
-                            "set mode dhcp",
+							"set mode static",
+							{ "Fn::Join" : [ "", [ "set ip ",{"Ref":"IPBPrivateSubnet2"}]]},
                             "set allowaccess ping https ssh",
                             "set mtu-override enable",
                             "set mtu 9001",
@@ -564,7 +599,8 @@
                             "next",
                             "edit port4",
                             "set alias hamgmt",
-                            "set mode dhcp",
+							"set mode static",
+							{ "Fn::Join" : [ "", [ "set ip ",{"Ref":"IPBMgmtSubnet2"}]]},
                             "set allowaccess ping https ssh",
                             "set mtu-override enable",
                             "set mtu 9001",
@@ -633,6 +669,9 @@
 				"SubnetId": {
 					"Ref": "PublicSubnet1"
 				},
+				"PrivateIpAddress": {
+					"Fn::Select" : [ "0", { "Fn::Split": ["/", {"Ref": "IPAPublicSubnet1"}]}]
+				},
 				"Tags": [
 					{
 						"Key": "Name",
@@ -667,6 +706,9 @@
 				"SourceDestCheck": "false",
 				"SubnetId": {
 					"Ref": "PublicSubnet2"
+				},
+				"PrivateIpAddress": {
+					"Fn::Select" : [ "0", { "Fn::Split": ["/", {"Ref": "IPBPublicSubnet2"}]}]
 				},
 				"Tags": [
 					{
@@ -703,6 +745,9 @@
 				"SubnetId": {
 					"Ref": "PrivateSubnet1"
 				},
+				"PrivateIpAddress": {
+					"Fn::Select" : [ "0", { "Fn::Split": ["/", {"Ref": "IPAPrivateSubnet1"}]}]
+				},
 				"Tags": [
 					{
 						"Key": "Name",
@@ -733,6 +778,9 @@
 				"SourceDestCheck": "false",
 				"SubnetId": {
 					"Ref": "PrivateSubnet2"
+				},
+				"PrivateIpAddress": {
+					"Fn::Select" : [ "0", { "Fn::Split": ["/", {"Ref": "IPBPrivateSubnet2"}]}]
 				},
 				"Tags": [
 					{
@@ -863,6 +911,9 @@
 				"SubnetId": {
 					"Ref": "MgmtSubnet1"
 				},
+				"PrivateIpAddress": {
+					"Fn::Select" : [ "0", { "Fn::Split": ["/", {"Ref": "IPAMgmtSubnet1"}]}]
+				},
 				"Tags": [
 					{
 						"Key": "Name",
@@ -893,6 +944,9 @@
 				"SourceDestCheck": "false",
 				"SubnetId": {
 					"Ref": "MgmtSubnet2"
+				},
+				"PrivateIpAddress": {
+					"Fn::Select" : [ "0", { "Fn::Split": ["/", {"Ref": "IPBMgmtSubnet2"}]}]
 				},
 				"Tags": [
 					{
