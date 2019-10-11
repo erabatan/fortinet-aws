@@ -15,14 +15,14 @@
 						"PublicSubnet1RouterIP",
 						"PrivateSubnet1",
 						"PrivateSubnet1RouterIP",
-						"HeartbeatSubnet1",
+						"IPAHeartBeatSubnet1",
 						"MgmtSubnet1",
 						"MgmtSubnet1RouterIP",
 						"PublicSubnet2",
 						"PublicSubnet2RouterIP",
 						"PrivateSubnet2",
 						"PrivateSubnet2RouterIP",
-						"HeartbeatSubnet2",
+						"IPBHeartBeatSubnet2",
 						"MgmtSubnet2",
 						"MgmtSubnet2RouterIP"
 					]
@@ -101,7 +101,7 @@
 			"Default": "10.0.2.1",
 			"Description": "Provide the IP of the gateway for the private subnet1"
 		},
-		"HeartbeatSubnet1": {
+		"IPAHeartBeatSubnet1": {
 			"Type": "AWS::EC2::Subnet::Id",
 			"Description": "Select the heartbeat subnet1"
 		},
@@ -187,11 +187,11 @@
 			"Type": "String",
 			"Description": "Secret for HA peer identification"
 		},
-		"FortiGateAHeartbeatIP": {
+		"IPAHeartBeatSubnet1": {
 			"Type": "String",
 			"Description": "Enter the IP address in CIDR form for the heartbeat interface of FortiGateA (IP from heartbeat Subnet1). Ex: 10.0.3.10/24"
 		},
-		"FortiGateBHeartbeatIP": {
+		"IPBHeartBeatSubnet2": {
 			"Type": "String",
 			"Description": "Enter the IP address in CIDR form for the heartbeat interface of FortiGateB (IP from heartbeat Subnet2). Ex: 10.0.30.10/24"
 		}
@@ -439,7 +439,7 @@
                             "edit port3",
                             "set alias hasync",
                             "set mode static",
-                            { "Fn::Join" : [ "", [ "set ip ",{"Ref":"FortiGateAHeartbeatIP"}]]},
+                            { "Fn::Join" : [ "", [ "set ip ",{"Ref":"IPAHeartBeatSubnet1"}]]},
                             "set allowaccess ping",
                             "set mtu-override enable",
                             "set mtu 9001",
@@ -592,7 +592,7 @@
                             "edit port3",
                             "set alias hasync",
                             "set mode static",
-                            { "Fn::Join" : [ "", [ "set ip ",{"Ref":"FortiGateBHeartbeatIP"}]]},
+                            { "Fn::Join" : [ "", [ "set ip ",{"Ref":"IPBHeartBeatSubnet2"}]]},
                             "set allowaccess ping",
                             "set mtu-override enable",
                             "set mtu 9001",
@@ -811,7 +811,7 @@
 				],
 				"SourceDestCheck": "false",
 				"SubnetId": {
-					"Ref": "HeartbeatSubnet1"
+					"Ref": "IPAHeartBeatSubnet1"
 				},
 				"PrivateIpAddresses": [
 					{
@@ -822,7 +822,7 @@
 									"Fn::Split": [
 										"/",
 										{
-											"Ref": "FortiGateAHeartbeatIP"
+											"Ref": "IPAHeartBeatSubnet1"
 										}
 									]
 								}
@@ -871,7 +871,7 @@
 									"Fn::Split": [
 										"/",
 										{
-											"Ref": "FortiGateBHeartbeatIP"
+											"Ref": "IPBHeartBeatSubnet2"
 										}
 									]
 								}
