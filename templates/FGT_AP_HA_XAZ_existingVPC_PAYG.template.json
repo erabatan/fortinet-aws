@@ -15,14 +15,14 @@
 						"PublicSubnet1RouterIP",
 						"PrivateSubnet1",
 						"PrivateSubnet1RouterIP",
-						"IPAHeartBeatSubnet1",
+						"HeartbeatSubnet1",
 						"MgmtSubnet1",
 						"MgmtSubnet1RouterIP",
 						"PublicSubnet2",
 						"PublicSubnet2RouterIP",
 						"PrivateSubnet2",
 						"PrivateSubnet2RouterIP",
-						"IPBHeartBeatSubnet2",
+						"HeartbeatSubnet2",
 						"MgmtSubnet2",
 						"MgmtSubnet2RouterIP"
 					]
@@ -47,11 +47,11 @@
 					"Parameters": [
 						"IPAPublicSubnet1",
 						"IPAPrivateSubnet1",
-						"FortiGateAHeartbeatIP",
+						"IPAHeartBeatSubnet1",
 						"IPAMgmtSubnet1",
 						"IPBPublicSubnet2",
 						"IPBPrivateSubnet2",
-						"FortiGateBHeartbeatIP",
+						"IPBHeartBeatSubnet2",
 						"IPBMgmtSubnet2"
 					]
 				}
@@ -101,7 +101,7 @@
 			"Default": "10.0.2.1",
 			"Description": "Provide the IP of the gateway for the private subnet1"
 		},
-		"IPAHeartBeatSubnet1": {
+		"HeartbeatSubnet1": {
 			"Type": "AWS::EC2::Subnet::Id",
 			"Description": "Select the heartbeat subnet1"
 		},
@@ -495,7 +495,7 @@
                             "set override disable",
                             "set priority 255",
                             "set unicast-hb enable",
-                            { "Fn::Join" : [ "", [ "set unicast-hb-peerip ",{"Fn::Select" : [ "0", { "Fn::Split": ["/", {"Ref": "FortiGateBHeartbeatIP"}]}]}]]},
+                            { "Fn::Join" : [ "", [ "set unicast-hb-peerip ",{"Fn::Select" : [ "0", { "Fn::Split": ["/", {"Ref": "IPBHeartBeatSubnet2"}]}]}]]},
                             "end"
 							]
 						]
@@ -648,7 +648,7 @@
                             "set override disable",
                             "set priority 100",
                             "set unicast-hb enable",
-                            { "Fn::Join" : [ "", [ "set unicast-hb-peerip ",{"Fn::Select" : [ "0", { "Fn::Split": ["/", {"Ref": "FortiGateAHeartbeatIP"}]}]}]]},
+                            { "Fn::Join" : [ "", [ "set unicast-hb-peerip ",{"Fn::Select" : [ "0", { "Fn::Split": ["/", {"Ref": "IPAHeartBeatSubnet1"}]}]}]]},
                             "end"
                             ]
                         ]
@@ -811,7 +811,7 @@
 				],
 				"SourceDestCheck": "false",
 				"SubnetId": {
-					"Ref": "IPAHeartBeatSubnet1"
+					"Ref": "HeartbeatSubnet1"
 				},
 				"PrivateIpAddresses": [
 					{
